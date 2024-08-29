@@ -37,8 +37,7 @@ public class CurrencyConverterService {
                             .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))
                             .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))
                             .conversionRate(conversionRates.getConversionRate())
-                            .build()
-            );
+                            .build());
         });
         return conversionRatesWithCountryNames;
     }
@@ -51,7 +50,6 @@ public class CurrencyConverterService {
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
-
         List<ConversionRates> conversionRates = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryFid, conversionCountryFid);
         //todo if empty check the reverse in the opposite direction
         if (conversionRates.isEmpty()) {
@@ -76,28 +74,22 @@ public class CurrencyConverterService {
             }
             try {
                 Double.parseDouble(item.get(2));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                        String.format("Problem with - %s to %s , %s",item.get(0), item.get(1), item.get(2)));
+                        String.format("Problem with - %s to %s , %s", item.get(0), item.get(1), item.get(2)));
 
             }
         });
 
         currencyData.getCurrencyData().forEach(item -> {
-
-
             Long originCountryId = countriesService.getCountryId(item.get(0));
             Long conversionCountryId = countriesService.getCountryId(item.get(1));
             BigDecimal conversionRate = BigDecimal.valueOf(Double.parseDouble(item.get(2)));
-
             conversionRatesDao.save(ConversionRates.builder()
                     .originCountryFid(originCountryId)
                     .conversionCountryFid(conversionCountryId)
                     .conversionRate(conversionRate)
                     .build());
         });
-
     }
-
 }
