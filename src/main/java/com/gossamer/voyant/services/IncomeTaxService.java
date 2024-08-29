@@ -5,9 +5,7 @@ import com.gossamer.voyant.entities.IncomeTaxBrackets;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class IncomeTaxService {
@@ -22,7 +20,7 @@ public class IncomeTaxService {
         return (List<IncomeTaxBrackets>) incomeTaxBracketsDao.findAll();
     }
 
-    public List<IncomeTaxBrackets> getIncomeBracketsForIncome(BigDecimal income ) {
+    public List<IncomeTaxBrackets> getIncomeBracketsForIncomeLowToHigh(BigDecimal income ) {
         return incomeTaxBracketsDao.findIncomeTaxBracketsByLowerLimitIsLessThanEqualOrderByLowerLimit(income);
     }
 
@@ -31,7 +29,7 @@ public class IncomeTaxService {
         if (income.compareTo(BigDecimal.ZERO) < 0) {
             return BigDecimal.ZERO;
         }
-        List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncome(income);
+        List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncomeLowToHigh(income);
 
         BigDecimal taxOwed = BigDecimal.ZERO;
 
@@ -48,4 +46,22 @@ public class IncomeTaxService {
 
         return taxOwed;
     }
+
+    public BigDecimal determineMarginalTaxRate(BigDecimal income) {
+
+        List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncomeLowToHigh(income);
+        if (incomeTaxBracketsList.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        for (IncomeTaxBrackets currentTaxBracket : incomeTaxBracketsList) {
+            // if income is equal to the bracket split, marginal Tax is the lower tax... confirm with team
+            if (income.compareTo(currentTaxBracket.getHigherLimit()) == 0) {
+                return currentTaxBracket.getTaxRate();
+            }
+        }
+
+        return incomeTaxBracketsList.get(incomeTaxBracketsList.size() - 1).getTaxRate();
+    }
+
 }

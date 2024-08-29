@@ -1,9 +1,6 @@
 package com.gossamer.voyant.controllers;
 
-import com.gossamer.voyant.entities.ConversionRates;
 import com.gossamer.voyant.entities.IncomeTaxBrackets;
-import com.gossamer.voyant.services.CountriesService;
-import com.gossamer.voyant.services.CurrencyConversionService;
 import com.gossamer.voyant.services.IncomeTaxService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +29,7 @@ public class IncomeTaxController {
     @GetMapping("/getIncomeTaxBracketsForIncome")
     List<IncomeTaxBrackets> getIncomeTaxBracketsForIncome(@RequestParam BigDecimal income) {
 
-        return incomeTaxService.getIncomeBracketsForIncome(income) ;
+        return incomeTaxService.getIncomeBracketsForIncomeLowToHigh(income) ;
     }
 
     @GetMapping("/calculateIncomeTax")
@@ -40,4 +37,11 @@ public class IncomeTaxController {
 
         return incomeTaxService.calculateIncomeTax(income) ;
     }
+
+    @GetMapping("/determineMarginalTaxRate")
+    BigDecimal determineMarginalTaxRate(@RequestParam BigDecimal income) {
+
+        return incomeTaxService.determineMarginalTaxRate(income) ;
+    }
+
 }
