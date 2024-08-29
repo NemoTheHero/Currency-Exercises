@@ -13,11 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("currencyConvertor")
 public class CurrencyConverterController {
-    private final CountriesService countriesService;
     private final CurrencyConversionService currencyConversionService;
 
-    public CurrencyConverterController(CountriesService countriesService, CurrencyConversionService currencyConversionService) {
-        this.countriesService = countriesService;
+    public CurrencyConverterController(CurrencyConversionService currencyConversionService) {
         this.currencyConversionService = currencyConversionService;
     }
 
