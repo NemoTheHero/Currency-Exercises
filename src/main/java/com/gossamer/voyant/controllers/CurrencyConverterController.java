@@ -1,6 +1,8 @@
 package com.gossamer.voyant.controllers;
 
 import com.gossamer.voyant.entities.ConversionRates;
+import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+import com.gossamer.voyant.model.CurrencyData;
 import com.gossamer.voyant.services.CountriesService;
 import com.gossamer.voyant.services.CurrencyConversionService;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +29,26 @@ public class CurrencyConverterController {
         return currencyConversionService.getAllConversionRates() ;
     }
 
+    @GetMapping("/getAllConversionRatesWithCountryName")
+    List<ConversionRatesWithCountryName> getAllConversionRatesWithCountryName() {
+
+        return currencyConversionService.getAllConversionRatesWithCountryName() ;
+    }
+
     @GetMapping("/getConversionRate")
     BigDecimal getConversionRate(@RequestParam("originCountry") String originCountry,
                                  @RequestParam("conversionCountry") String conversionCountry) {
 
         return currencyConversionService.getConversionRate(originCountry,conversionCountry) ;
+    }
+
+
+
+
+    @PostMapping("/addCurrencyConversions")
+    CurrencyData addCurrencyConversions(@RequestBody CurrencyData currencyData) {
+
+        return currencyData;
     }
 
 

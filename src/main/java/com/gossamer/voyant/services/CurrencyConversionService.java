@@ -3,6 +3,8 @@ package com.gossamer.voyant.services;
 import com.gossamer.voyant.dao.CountriesDao;
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
+import com.gossamer.voyant.entities.Countries;
+import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CurrencyConversionService {
@@ -25,9 +29,32 @@ public class CurrencyConversionService {
         this.countriesService = countriesService;
     }
 
+    public List<ConversionRatesWithCountryName> getAllConversionRatesWithCountryName() {
+        Map<Long, String> allCountries = countriesService.getAllCountries().stream()
+                .collect(Collectors.toMap(Countries::getId, Countries::getCountry));
+        List<ConversionRates> allConversionRates = getAllConversionRates();
+        List<ConversionRatesWithCountryName> conversionRatesWithCountryNames = new ArrayList<>();
+
+        allConversionRates.forEach(conversionRates -> {
+            conversionRatesWithCountryNames.add(
+              ConversionRatesWithCountryName.builder()
+                      .originCountry(allCountries.get(conversionRates.getOriginCountryFid()))
+
+                      .conversionCountry(allCountries.get(conversionRates.getConversionCountryFid()))
+                      .conversionRate(conversionRates.getConversionRate())
+                      .build()
+            );
+        });
+
+
+        return conversionRatesWithCountryNames;
+    }
+
     public List<ConversionRates> getAllConversionRates() {
         return (List<ConversionRates>) conversionRatesDao.findAll();
     }
+
+
 
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);

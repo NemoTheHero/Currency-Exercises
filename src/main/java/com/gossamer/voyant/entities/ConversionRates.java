@@ -17,7 +17,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class ConversionRates {
     @Id
     @GeneratedValue(strategy = IDENTITY)
