@@ -8,14 +8,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -87,7 +88,7 @@ public class CurrencyConverterServiceTest {
         List<List<String>> newCurrencyRates = Arrays.asList(
                 Arrays.asList("YEN", "USD", ".01"),
                 Arrays.asList("EUR", "YEN", "8.5")
-                );
+        );
         CurrencyData currencyData = CurrencyData.builder()
                 .currencyData(newCurrencyRates)
                 .build();
@@ -104,5 +105,61 @@ public class CurrencyConverterServiceTest {
         );
     }
 
+    @Test
+    public void shouldThrowIfCountryIsNotInSystem() {
+        //test originCountry
+        ResponseStatusException exception = Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    List<List<String>> newCurrencyRates = List.of(
+                            Arrays.asList("USA", "USD", ".01")
+                    );
+                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                            .currencyData(newCurrencyRates)
+                            .build());
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        Assertions.assertEquals(String.format("404 NOT_FOUND \"Country not in system - %s\"", "USA"), exception.getMessage());
+
+        //test conversionCountry
+        exception = Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    List<List<String>> newCurrencyRates = List.of(
+                            Arrays.asList("YEN", "USA", ".01")
+                    );
+                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                            .currencyData(newCurrencyRates)
+                            .build());
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        Assertions.assertEquals(String.format("404 NOT_FOUND \"Country not in system - %s\"", "USA"), exception.getMessage());
+    }
+
+    @Test
+    public void shouldThrowIfUnableToParseNewRate() {
+        ResponseStatusException exception = Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    List<List<String>> newCurrencyRates = List.of(
+                            Arrays.asList("YEN", "USD", "0.22O")
+                    );
+                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                            .currencyData(newCurrencyRates)
+                            .build());
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, exception.getStatusCode());
+        Assertions.assertEquals(
+                String.format("422 UNPROCESSABLE_ENTITY \"Problem with - %s to %s , %s\"", "YEN", "USD", "0.22O"),
+                exception.getMessage());
+
+
+    }
 
 }

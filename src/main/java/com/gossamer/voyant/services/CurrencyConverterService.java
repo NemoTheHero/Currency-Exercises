@@ -31,21 +31,18 @@ public class CurrencyConverterService {
         List<ConversionRates> allConversionRates = getAllConversionRates();
         List<ConversionRatesWithCountryName> conversionRatesWithCountryNames = new ArrayList<>();
 
-        allConversionRates.forEach(conversionRates -> {
-            conversionRatesWithCountryNames.add(
-                    ConversionRatesWithCountryName.builder()
-                            .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))
-                            .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))
-                            .conversionRate(conversionRates.getConversionRate())
-                            .build());
-        });
+        allConversionRates.forEach(conversionRates -> conversionRatesWithCountryNames.add(
+                ConversionRatesWithCountryName.builder()
+                        .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))
+                        .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))
+                        .conversionRate(conversionRates.getConversionRate())
+                        .build()));
         return conversionRatesWithCountryNames;
     }
 
     public List<ConversionRates> getAllConversionRates() {
         return (List<ConversionRates>) conversionRatesDao.findAll();
     }
-
 
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);
