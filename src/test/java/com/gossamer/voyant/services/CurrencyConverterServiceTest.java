@@ -12,14 +12,14 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CurrencyConversionServiceTest {
+public class CurrencyConverterServiceTest {
     @Autowired
-    CurrencyConversionService currencyConversionService;
+    CurrencyConverterService currencyConverterService;
 
 
     @Test
     public void shouldHaveCurrenciesOnStartup() {
-        List<ConversionRates> countriesList = currencyConversionService.getAllConversionRates();
+        List<ConversionRates> countriesList = currencyConverterService.getAllConversionRates();
         Assertions.assertEquals(4, countriesList.size());
     }
 

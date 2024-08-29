@@ -1,7 +1,7 @@
 package com.gossamer.voyant.controllers;
 
 import com.gossamer.voyant.entities.IncomeTaxBrackets;
-import com.gossamer.voyant.services.IncomeTaxService;
+import com.gossamer.voyant.services.IncomeTaxSystemService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,40 +14,40 @@ import java.util.List;
 @RequestMapping("incomeTax")
 public class IncomeTaxController {
 
-    private final IncomeTaxService incomeTaxService;
+    private final IncomeTaxSystemService incomeTaxSystemService;
 
-    public IncomeTaxController(IncomeTaxService incomeTaxService) {
-        this.incomeTaxService = incomeTaxService;
+    public IncomeTaxController(IncomeTaxSystemService incomeTaxSystemService) {
+        this.incomeTaxSystemService = incomeTaxSystemService;
     }
 
     @GetMapping("/getAllIncomeTaxes")
     List<IncomeTaxBrackets> getAllConversionRates() {
 
-        return incomeTaxService.getAllTaxBrackets() ;
+        return incomeTaxSystemService.getAllTaxBrackets() ;
     }
 
     @GetMapping("/getIncomeTaxBracketsForIncome")
     List<IncomeTaxBrackets> getIncomeTaxBracketsForIncome(@RequestParam BigDecimal income) {
 
-        return incomeTaxService.getIncomeBracketsForIncomeLowToHigh(income) ;
+        return incomeTaxSystemService.getIncomeBracketsForIncomeLowToHigh(income) ;
     }
 
     @GetMapping("/calculateIncomeTax")
     BigDecimal calculateIncomeTax(@RequestParam BigDecimal income) {
 
-        return incomeTaxService.calculateIncomeTax(income) ;
+        return incomeTaxSystemService.calculateIncomeTax(income) ;
     }
 
     @GetMapping("/determineMarginalTaxRate")
     BigDecimal determineMarginalTaxRate(@RequestParam BigDecimal income) {
 
-        return incomeTaxService.determineMarginalTaxRate(income) ;
+        return incomeTaxSystemService.determineMarginalTaxRate(income) ;
     }
 
     @GetMapping("/determineEffectiveTaxRate")
     BigDecimal determineEffectiveTaxRate(@RequestParam BigDecimal income) {
 
-        return incomeTaxService.determineEffectiveTaxRate(income) ;
+        return incomeTaxSystemService.determineEffectiveTaxRate(income) ;
     }
 
 }

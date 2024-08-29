@@ -9,12 +9,12 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Service
-public class IncomeTaxService {
+public class IncomeTaxSystemService {
 
     private final IncomeTaxBracketsDao incomeTaxBracketsDao;
 
 
-    public IncomeTaxService(IncomeTaxBracketsDao incomeTaxBracketsDao) {
+    public IncomeTaxSystemService(IncomeTaxBracketsDao incomeTaxBracketsDao) {
         this.incomeTaxBracketsDao = incomeTaxBracketsDao;
     }
     public List<IncomeTaxBrackets> getAllTaxBrackets() {

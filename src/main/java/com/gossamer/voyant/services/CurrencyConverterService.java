@@ -2,31 +2,26 @@ package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.entities.Country;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
-public class CurrencyConversionService {
+public class CurrencyConverterService {
 
     private final ConversionRatesDao conversionRatesDao;
 
     private final CountriesService countriesService;
 
 
-    public CurrencyConversionService(ConversionRatesDao conversionRatesDao, CountriesService countriesService) {
+    public CurrencyConverterService(ConversionRatesDao conversionRatesDao, CountriesService countriesService) {
         this.conversionRatesDao = conversionRatesDao;
         this.countriesService = countriesService;
     }

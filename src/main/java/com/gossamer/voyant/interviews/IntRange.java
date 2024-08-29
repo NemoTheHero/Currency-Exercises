@@ -6,6 +6,8 @@
 
 package com.gossamer.voyant.interviews;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Implementation of a classic Integer range,
  *
@@ -18,6 +20,7 @@ package com.gossamer.voyant.interviews;
  *
  *
  */
+@Component
 public class IntRange {
 
 
@@ -31,8 +34,19 @@ public class IntRange {
      *
      * @return true if the provided range overlaps with this range
      */
-    public boolean overlaps( ) {
-        return false;
+    public boolean overlaps(int[] array1, int[] array2) {
+
+        if (array1 == null || array1.length != 2 ||array2 == null || array2.length != 2) {
+            return false;
+        }
+
+        int smallestInArray1 = Math.min(array1[0], array1[1]);
+        int largestInArray1 = Math.max(array1[0], array1[1]);
+
+        int smallestInArray2 = Math.min(array2[0], array2[1]);
+        int largestInArray2 = Math.max(array2[0], array2[1]);
+
+        return largestInArray1 >= smallestInArray2 && largestInArray2 >= smallestInArray1;
     }
 
 }
