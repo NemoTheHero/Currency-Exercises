@@ -24,10 +24,10 @@ public class ConversionRates {
     private Long id;
 
     @Column(nullable = false)
-    private String originCountryFid;
+    private Long originCountryFid;
 
     @Column(nullable = false)
-    private String conversionCountryFid;
+    private Long conversionCountryFid;
 
     @Column(nullable = false)
     private BigDecimal conversionRate;
