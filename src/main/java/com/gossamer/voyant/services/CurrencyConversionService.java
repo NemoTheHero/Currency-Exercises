@@ -81,13 +81,14 @@ public class CurrencyConversionService {
             String conversionCountry = item.get(1);
             if (!countriesToMap.containsValue(conversionCountry)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        String.format("Country not in system - %s", originCountry));
+                        String.format("Country not in system - %s", conversionCountry));
             }
             try {
                 Double.parseDouble(item.get(2));
             }
             catch (Exception e) {
-                throw new ErrorResponseException(HttpStatus.UNPROCESSABLE_ENTITY);
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        String.format("Problem with - %s to %s , %s",item.get(0), item.get(1), item.get(2)));
 
             }
         });
