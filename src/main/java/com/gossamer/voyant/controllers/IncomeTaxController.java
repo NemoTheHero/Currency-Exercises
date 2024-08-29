@@ -7,8 +7,10 @@ import com.gossamer.voyant.services.CurrencyConversionService;
 import com.gossamer.voyant.services.IncomeTaxService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -25,5 +27,11 @@ public class IncomeTaxController {
     List<IncomeTaxBrackets> getAllConversionRates() {
 
         return incomeTaxService.getAllTaxBrackets() ;
+    }
+
+    @GetMapping("/getIncomeTaxBracketsForIncome")
+    List<IncomeTaxBrackets> getIncomeTaxBracketsForIncome(@RequestParam BigDecimal income) {
+
+        return incomeTaxService.getIncomeBracketsForIncome(income) ;
     }
 }

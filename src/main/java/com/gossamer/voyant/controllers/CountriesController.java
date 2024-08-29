@@ -25,8 +25,8 @@ public class CountriesController {
         return countriesService.getAllCountries() ;
     }
 
-    @GetMapping("/getCountriesId/{country}")
-    Long getCountriesId(@PathVariable String country) {
+    @GetMapping("/getCountriesId")
+    Long getCountriesId(@RequestParam String country) {
 
         return countriesService.getCountryId(country);
     }
