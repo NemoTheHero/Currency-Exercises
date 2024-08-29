@@ -5,7 +5,7 @@
  * Time: 10:06 AM
  */
 
-package com.gossamer.voyant.interviews.interviews;
+package com.gossamer.voyant.interviews;
 
 /**
  *

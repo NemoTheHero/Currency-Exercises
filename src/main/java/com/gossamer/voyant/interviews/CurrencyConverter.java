@@ -6,7 +6,7 @@
  * Time: 10:18 AM
  */
 
-package com.gossamer.voyant.interviews.interviews;
+package com.gossamer.voyant.interviews;
 
 /**
  * In order to convert the value of a specific currency, say $10, to its equivalent value in British pounds,

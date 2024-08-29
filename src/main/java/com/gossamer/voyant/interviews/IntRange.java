@@ -4,7 +4,7 @@
  * Time: 10:01 AM
  */
 
-package com.gossamer.voyant.interviews.interviews;
+package com.gossamer.voyant.interviews;
 
 /**
  * Implementation of a classic Integer range,
