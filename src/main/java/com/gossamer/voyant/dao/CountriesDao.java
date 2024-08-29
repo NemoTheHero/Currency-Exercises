@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 @Table(name = "countries")
 // Interface extending CrudRepository
-public interface ICountriesDao
+public interface CountriesDao
         extends CrudRepository<Countries, Long> {
 
     List<Countries> findByCountry(String country);

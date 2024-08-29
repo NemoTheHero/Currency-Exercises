@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 // Annotation
 @Repository
-@Table(name = "countries")
+@Table(name = "conversion_rates")
 // Interface extending CrudRepository
-public interface ICurrencyConversionDao
+public interface ConversionRatesDao
         extends CrudRepository<ConversionRates, Long> {
 }
 

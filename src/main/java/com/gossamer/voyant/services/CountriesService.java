@@ -1,6 +1,6 @@
 package com.gossamer.voyant.services;
 
-import com.gossamer.voyant.dao.ICountriesDao;
+import com.gossamer.voyant.dao.CountriesDao;
 import com.gossamer.voyant.entities.Countries;
 
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,9 @@ import java.util.List;
 @Service
 public class CountriesService {
 
-    private final ICountriesDao countriesDao;
+    private final CountriesDao countriesDao;
 
-    public CountriesService(ICountriesDao countriesDao) {
+    public CountriesService(CountriesDao countriesDao) {
         this.countriesDao = countriesDao;
     }
 
