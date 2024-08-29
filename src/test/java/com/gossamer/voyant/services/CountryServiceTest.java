@@ -1,6 +1,6 @@
 package com.gossamer.voyant.services;
 
-import com.gossamer.voyant.entities.Countries;
+import com.gossamer.voyant.entities.Country;
 import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,15 +13,15 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CountriesServiceTest {
+public class CountryServiceTest {
     @Autowired
     CountriesService countriesService;
 
 
     @Test
     public void shouldHaveCountriesOnStartup() {
-        List<Countries> countriesList = countriesService.getAllCountries();
-        Assertions.assertEquals(6, countriesList.size());
+        List<Country> countryList = countriesService.getAllCountries();
+        Assertions.assertEquals(6, countryList.size());
     }
 
     @Test

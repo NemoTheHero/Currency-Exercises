@@ -1,14 +1,11 @@
 package com.gossamer.voyant.services;
 
-import com.gossamer.voyant.dao.CountriesDao;
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.entities.Countries;
+import com.gossamer.voyant.entities.Country;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.gossamer.voyant.model.CurrencyData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class CurrencyConversionService {
 
     public List<ConversionRatesWithCountryName> getAllConversionRatesWithCountryName() {
         Map<Long, String> allCountries = countriesService.getAllCountries().stream()
-                .collect(Collectors.toMap(Countries::getId, Countries::getCountry));
+                .collect(Collectors.toMap(Country::getId, Country::getCountry));
         List<ConversionRates> allConversionRates = getAllConversionRates();
         List<ConversionRatesWithCountryName> conversionRatesWithCountryNames = new ArrayList<>();
 
@@ -62,11 +59,16 @@ public class CurrencyConversionService {
 
         List<ConversionRates> conversionRates = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryFid, conversionCountryFid);
         if (conversionRates.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("No conversion rate found from %s to %s", originCountry, conversionCountry));
+            return null;
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+//                    String.format("No conversion rate found from %s to %s", originCountry, conversionCountry));
         }
         return conversionRates.get(0).getConversionRate();
     }
 
+    public void addNewCurrencyData(CurrencyData currencyData) {
+
+
+    }
 
 }

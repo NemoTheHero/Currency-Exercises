@@ -1,12 +1,10 @@
 package com.gossamer.voyant.controllers;
 
-import com.gossamer.voyant.entities.Countries;
+import com.gossamer.voyant.entities.Country;
+import com.gossamer.voyant.model.CurrencyData;
 import com.gossamer.voyant.services.CountriesService;
 import com.gossamer.voyant.services.CurrencyConversionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class CountriesController {
     }
 
     @GetMapping("/getAllCountries")
-    List<Countries> getAllCountries() {
+    List<Country> getAllCountries() {
 
         return countriesService.getAllCountries() ;
     }
@@ -33,7 +31,10 @@ public class CountriesController {
         return countriesService.getCountryId(country);
     }
 
-
+    @PostMapping("/addCountry")
+    void addCountry(@RequestBody Country country) {
+        countriesService.addCountry(country.getCountry());
+    }
 
 
 }

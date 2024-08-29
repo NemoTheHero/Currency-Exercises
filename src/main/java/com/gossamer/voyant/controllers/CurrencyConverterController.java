@@ -42,12 +42,8 @@ public class CurrencyConverterController {
         return currencyConversionService.getConversionRate(originCountry,conversionCountry) ;
     }
 
-
-
-
     @PostMapping("/addCurrencyConversions")
     CurrencyData addCurrencyConversions(@RequestBody CurrencyData currencyData) {
-
         return currencyData;
     }
 

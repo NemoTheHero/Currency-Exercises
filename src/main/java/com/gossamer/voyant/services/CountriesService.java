@@ -1,7 +1,7 @@
 package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.CountriesDao;
-import com.gossamer.voyant.entities.Countries;
+import com.gossamer.voyant.entities.Country;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,16 +19,21 @@ public class CountriesService {
     }
 
 
-    public List<Countries> getAllCountries() {
-        return (List<Countries>) countriesDao.findAll();
+    public List<Country> getAllCountries() {
+        return (List<Country>) countriesDao.findAll();
     }
 
     public Long getCountryId(String country) {
-        List<Countries> countryId = countriesDao.findByCountry(country);
+        List<Country> countryId = countriesDao.findByCountry(country);
         if (countryId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     country + " not found");
         }
         return countryId.get(0).getId();
+    }
+
+
+    public void addCountry(String countryName) {
+        countriesDao.save(Country.builder().country(countryName).build());
     }
 }
