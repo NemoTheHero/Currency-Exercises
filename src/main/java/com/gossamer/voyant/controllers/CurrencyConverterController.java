@@ -31,7 +31,7 @@ public class CurrencyConverterController {
     BigDecimal getConversionRate(@RequestParam("originCountry") String originCountry,
                                  @RequestParam("conversionCountry") String conversionCountry) {
 
-        return currencyConversionService.getConversionRateBetweenCountries(originCountry,conversionCountry) ;
+        return currencyConversionService.getConversionRate(originCountry,conversionCountry) ;
     }
 
 

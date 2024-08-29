@@ -31,6 +31,4 @@ public class ConversionRates {
 
     @Column(nullable = false)
     private BigDecimal conversionRate;
-
-
 }

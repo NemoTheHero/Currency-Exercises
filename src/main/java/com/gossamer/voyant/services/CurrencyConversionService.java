@@ -29,7 +29,7 @@ public class CurrencyConversionService {
         return (List<ConversionRates>) conversionRatesDao.findAll();
     }
 
-    public BigDecimal getConversionRateBetweenCountries(String originCountry, String conversionCountry) {
+    public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
 
@@ -38,7 +38,6 @@ public class CurrencyConversionService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     String.format("No conversion rate found from %s to %s", originCountry, conversionCountry));
         }
-
         return conversionRates.get(0).getConversionRate();
     }
 
