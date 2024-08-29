@@ -63,4 +63,6 @@ VALUES (20000, 50000, .15);
 insert into income_tax_brackets (lower_limit, higher_limit, tax_rate)
 VALUES (50000, 100000, .20);
 insert into income_tax_brackets (lower_limit, higher_limit, tax_rate)
-VALUES (100000, 100000000000000, .20);
+VALUES (150000, 100000000000000, .30);
+insert into income_tax_brackets (lower_limit, higher_limit, tax_rate)
+VALUES (100000, 150000, .25);
