@@ -43,8 +43,8 @@ public class CurrencyConverterController {
     }
 
     @PostMapping("/addCurrencyConversions")
-    CurrencyData addCurrencyConversions(@RequestBody CurrencyData currencyData) {
-        return currencyData;
+    void addCurrencyConversions(@RequestBody CurrencyData currencyData) {
+        currencyConversionService.addNewCurrencyData(currencyData);
     }
 
 

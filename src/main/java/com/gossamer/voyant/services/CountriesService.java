@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CountriesService {
@@ -35,5 +37,10 @@ public class CountriesService {
 
     public void addCountry(String countryName) {
         countriesDao.save(Country.builder().country(countryName).build());
+    }
+
+    public Map<Long,String> countriesToMap () {
+        return getAllCountries().stream()
+                .collect(Collectors.toMap(Country::getId, Country::getCountry));
     }
 }
