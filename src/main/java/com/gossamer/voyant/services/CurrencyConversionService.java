@@ -61,6 +61,7 @@ public class CurrencyConversionService {
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
 
         List<ConversionRates> conversionRates = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryFid, conversionCountryFid);
+        //todo if empty check the reverse in the opposite direction
         if (conversionRates.isEmpty()) {
             return null;
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
