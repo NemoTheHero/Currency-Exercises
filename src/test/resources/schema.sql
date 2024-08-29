@@ -12,6 +12,7 @@ insert into countries (country) values ('GDP');
 insert into countries (country) values ('EUR');
 insert into countries (country) values ('CAD');
 insert into countries (country) values ('YEN');
+insert into countries (country) values ('AUS');
 
 create table if not exists conversion_rates(
                                                ID int not null AUTO_INCREMENT,
@@ -35,4 +36,4 @@ insert into conversion_rates (origin_country_fid, conversion_country_fid, conver
 VALUES ( (select ID from countries where country = 'CAD'), (select ID from countries where country = 'USD'), 0.78 );
 
 insert into conversion_rates (origin_country_fid, conversion_country_fid, conversion_rate)
-VALUES ( (select ID from countries where country = 'YEN'), (select ID from countries where country = 'USD'), 0.012 );
+VALUES ( (select ID from countries where country = 'YEN'), (select ID from countries where country = 'AUS'), 0.012 );
