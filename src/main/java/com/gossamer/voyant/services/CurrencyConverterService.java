@@ -35,14 +35,11 @@ public class CurrencyConverterService {
             conversionRatesWithCountryNames.add(
                     ConversionRatesWithCountryName.builder()
                             .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))
-
                             .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))
                             .conversionRate(conversionRates.getConversionRate())
                             .build()
             );
         });
-
-
         return conversionRatesWithCountryNames;
     }
 
@@ -59,8 +56,6 @@ public class CurrencyConverterService {
         //todo if empty check the reverse in the opposite direction
         if (conversionRates.isEmpty()) {
             return null;
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-//                    String.format("No conversion rate found from %s to %s", originCountry, conversionCountry));
         }
         return conversionRates.get(0).getConversionRate();
     }
