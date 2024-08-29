@@ -34,4 +34,10 @@ public class IncomeTaxController {
 
         return incomeTaxService.getIncomeBracketsForIncome(income) ;
     }
+
+    @GetMapping("/calculateIncomeTax")
+    BigDecimal calculateIncomeTax(@RequestParam BigDecimal income) {
+
+        return incomeTaxService.calculateIncomeTax(income) ;
+    }
 }

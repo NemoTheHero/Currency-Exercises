@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 @Table(name = "income_tax_brackets")
 public interface IncomeTaxBracketsDao extends CrudRepository<IncomeTaxBrackets, Long> {
-    List<IncomeTaxBrackets> findIncomeTaxBracketsByLowerLimitIsLessThanEqual(BigDecimal income);
+    List<IncomeTaxBrackets> findIncomeTaxBracketsByLowerLimitIsLessThanEqualOrderByLowerLimit(BigDecimal income);
 
 }
