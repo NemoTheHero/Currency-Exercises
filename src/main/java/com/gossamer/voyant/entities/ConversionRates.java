@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -16,12 +18,19 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Countries {
+public class ConversionRates {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String country;
+    private String originCountry;
+
+    @Column(nullable = false)
+    private String conversionCountry;
+
+    @Column(nullable = false)
+    private BigDecimal conversionRate;
+
 
 }
