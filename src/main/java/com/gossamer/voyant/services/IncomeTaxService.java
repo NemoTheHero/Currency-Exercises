@@ -5,6 +5,7 @@ import com.gossamer.voyant.entities.IncomeTaxBrackets;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -63,5 +64,14 @@ public class IncomeTaxService {
 
         return incomeTaxBracketsList.get(incomeTaxBracketsList.size() - 1).getTaxRate();
     }
+
+    public BigDecimal determineEffectiveTaxRate(BigDecimal income) {
+
+        if (income.compareTo(BigDecimal.ZERO) < 0) {
+            return BigDecimal.ZERO;
+        }
+        return calculateIncomeTax(income).divide(income, RoundingMode.HALF_EVEN);
+    }
+
 
 }

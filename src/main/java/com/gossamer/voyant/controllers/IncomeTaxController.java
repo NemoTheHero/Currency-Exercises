@@ -44,4 +44,10 @@ public class IncomeTaxController {
         return incomeTaxService.determineMarginalTaxRate(income) ;
     }
 
+    @GetMapping("/determineEffectiveTaxRate")
+    BigDecimal determineEffectiveTaxRate(@RequestParam BigDecimal income) {
+
+        return incomeTaxService.determineEffectiveTaxRate(income) ;
+    }
+
 }
