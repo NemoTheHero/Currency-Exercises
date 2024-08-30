@@ -45,6 +45,13 @@ public class CurrencyConverterServiceTest {
         Assertions.assertNull(currencyConverterService.getConversionRate("USD", "YEN"));
     }
 
+    @Test
+    public void shouldReturnInverseIfConversionRateCanBeMirroredFound() {
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(1.38889)
+                        .compareTo(currencyConverterService.getConversionRate("GDP", "USD")));
+    }
+
     @Test(expected = ResponseStatusException.class)
     public void shouldThrowErrorIfCountryNotFound() {
         Assertions.assertNull(currencyConverterService.getConversionRate("USA", "YEN"));

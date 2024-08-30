@@ -49,9 +49,13 @@ public class CurrencyConverterService {
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
         List<ConversionRates> conversionRates = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryFid, conversionCountryFid);
-        //todo if empty check the reverse in the opposite direction
         if (conversionRates.isEmpty()) {
-            return null;
+            //check for inverse
+            List<ConversionRates> inverseConversion = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(conversionCountryFid, originCountryFid);
+            if (inverseConversion.isEmpty()) {
+                return null;
+            }
+            return reverseConversion(inverseConversion.get(0).getConversionRate());
         }
         return conversionRates.get(0).getConversionRate();
     }
