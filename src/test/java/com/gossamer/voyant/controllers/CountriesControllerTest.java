@@ -60,7 +60,7 @@ public class CountriesControllerTest {
                 1L
         );
         MvcResult result = this.mockMvc.perform(
-                        get("/countries/getAllCountries")
+                        get("/countries/getCountriesId")
                                 .param("country", "USA"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -68,9 +68,12 @@ public class CountriesControllerTest {
         Assertions.assertEquals("1",
                 result.getResponse().getContentAsString());
 
+        Assertions.assertEquals("USA",
+                result.getRequest().getParameter("country"));
 
 
-        Mockito.verify(countriesService, Mockito.times(1)).getAllCountries();
+
+        Mockito.verify(countriesService, Mockito.times(1)).getCountryId("USA");
     }
 
 
