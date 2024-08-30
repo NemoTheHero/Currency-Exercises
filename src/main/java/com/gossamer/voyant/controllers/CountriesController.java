@@ -20,7 +20,6 @@ public class CountriesController {
 
     @GetMapping("/getAllCountries")
     List<Country> getAllCountries() {
-
         return countriesService.getAllCountries() ;
     }
 

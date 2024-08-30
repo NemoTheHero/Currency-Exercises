@@ -2,6 +2,8 @@ package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.IncomeTaxBracketsDao;
 import com.gossamer.voyant.entities.IncomeTaxBrackets;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,7 +29,7 @@ public class IncomeTaxSystemService {
 
     public BigDecimal calculateIncomeTax(BigDecimal income ) {
 
-        if (income.compareTo(BigDecimal.ZERO) < 0) {
+        if (income == null || income.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;
         }
         List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncomeLowToHigh(income);
@@ -37,6 +39,7 @@ public class IncomeTaxSystemService {
         for (IncomeTaxBrackets currentTaxBracket : incomeTaxBracketsList) {
             BigDecimal taxRange = currentTaxBracket.getHigherLimit().subtract(currentTaxBracket.getLowerLimit());
             // see if the tax range is lower than current taxable income
+            // essentially we are slicing the income by brackets
             if (income.compareTo(taxRange) >= 0) {
                 taxOwed = taxOwed.add(taxRange.multiply(currentTaxBracket.getTaxRate()));
                 income = income.subtract(taxRange);
@@ -50,10 +53,11 @@ public class IncomeTaxSystemService {
 
     public BigDecimal determineMarginalTaxRate(BigDecimal income) {
 
-        List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncomeLowToHigh(income);
-        if (incomeTaxBracketsList.isEmpty()) {
+        if (income == null || income.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;
         }
+
+        List<IncomeTaxBrackets> incomeTaxBracketsList = getIncomeBracketsForIncomeLowToHigh(income);
 
         for (IncomeTaxBrackets currentTaxBracket : incomeTaxBracketsList) {
             // if income is equal to the bracket split, marginal Tax is the lower tax... confirm with team
@@ -61,16 +65,15 @@ public class IncomeTaxSystemService {
                 return currentTaxBracket.getTaxRate();
             }
         }
-
         return incomeTaxBracketsList.get(incomeTaxBracketsList.size() - 1).getTaxRate();
     }
 
     public BigDecimal determineEffectiveTaxRate(BigDecimal income) {
 
-        if (income.compareTo(BigDecimal.ZERO) < 0) {
+        if (income == null || income.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;
         }
-        return calculateIncomeTax(income).divide(income, RoundingMode.HALF_EVEN);
+        return calculateIncomeTax(income).divide(income, RoundingMode.HALF_EVEN).setScale(7, RoundingMode.HALF_EVEN);
     }
 
 

@@ -98,6 +98,14 @@ public class IncomeTaxSystemServiceTest {
 
     @Test
     public void shouldCalculateIncomeTaxCorrectly() {
+        //return 0 if null
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.calculateIncomeTax(null)));
+
+        //return 0 if no income
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.calculateIncomeTax(BigDecimal.valueOf(0))));
+
         // $15000 taxed at 10% = 1500
         Assertions.assertEquals(0, BigDecimal.valueOf(1500)
                 .compareTo(incomeTaxSystemService.calculateIncomeTax(BigDecimal.valueOf(15000))));
@@ -121,7 +129,54 @@ public class IncomeTaxSystemServiceTest {
         // $0.10 taxed at 25% = .025
         Assertions.assertEquals(0, BigDecimal.valueOf(16500.025)
                 .compareTo(incomeTaxSystemService.calculateIncomeTax(BigDecimal.valueOf(100000.10))));
+    }
 
+    @Test
+    public void shouldDetermineEffectiveTaxRateCorrectly() {
+        //return 0 if null
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.determineEffectiveTaxRate(null)));
+
+        //return 0 if no income
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.determineEffectiveTaxRate(BigDecimal.valueOf(0))));
+
+        // $10000 taxed at 10% is 1000, 1000/10000
+        Assertions.assertEquals(0, BigDecimal.valueOf(.10)
+                .compareTo(incomeTaxSystemService.determineEffectiveTaxRate(BigDecimal.valueOf(10000))));
+
+        // $30,000
+        // $20,000 taxed at 10% = 2000 +
+        // $10,000 taxed at 15% = 1500
+        // 3500/30000 = 0.116666666667 but should clamp down to 7 decimal places
+        Assertions.assertEquals(0, BigDecimal.valueOf(.1166667)
+                .compareTo(incomeTaxSystemService.determineEffectiveTaxRate(BigDecimal.valueOf(30000))));
+    }
+
+    @Test
+    public void shouldDetermineMarginTaxCorrectly() {
+        //return 0 if null
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(null)));
+
+        //return 0 if no income
+        Assertions.assertEquals(0, BigDecimal.valueOf(0)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(BigDecimal.valueOf(0))));
+
+        // tax range 0-20000 is 10%
+        Assertions.assertEquals(0, BigDecimal.valueOf(.10)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(BigDecimal.valueOf(10000))));
+
+        // tax range 0-20000 is 10%, 20000-50000 is 15%, if on the fence use lower tax bracket
+        Assertions.assertEquals(0, BigDecimal.valueOf(.10)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(BigDecimal.valueOf(20000))));
+
+
+        Assertions.assertEquals(0, BigDecimal.valueOf(0.15)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(BigDecimal.valueOf(20000.01))));
+
+        Assertions.assertEquals(0, BigDecimal.valueOf(0.30)
+                .compareTo(incomeTaxSystemService.determineMarginalTaxRate(BigDecimal.valueOf(300000))));
     }
 
 }
