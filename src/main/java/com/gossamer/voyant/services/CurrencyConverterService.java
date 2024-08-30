@@ -69,8 +69,9 @@ public class CurrencyConverterService {
 
     public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
 
-
-
+        if (!currencyConnectionList(originCountryFid, conversionCountryFid).isEmpty()) {
+            return BigDecimal.ONE;
+        }
         return null;
     }
 
@@ -185,15 +186,15 @@ public class CurrencyConverterService {
         return getConnectedConversionRates(n, edges);
     }
 
-    boolean areCurrenciesConnected(Long originCurrency, Long conversionCurrency) {
+    List<Integer> currencyConnectionList(Long originCurrency, Long conversionCurrency) {
         List<List<Integer>> connectedConversionRates = getConnectedConversionRates();
 
         for (List<Integer> connectedRates :connectedConversionRates) {
             if (connectedRates.contains(originCurrency.intValue()) && connectedRates.contains(conversionCurrency.intValue())) {
-                return true;
+                return connectedRates;
             }
         }
-        return false;
+        return new ArrayList<>();
     }
 
 

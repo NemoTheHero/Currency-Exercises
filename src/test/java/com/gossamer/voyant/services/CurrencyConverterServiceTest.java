@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -248,14 +249,23 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
-    public void testAreCurrenciesConnected() {
-        Assertions.assertFalse(currencyConverterService.areCurrenciesConnected(0L,1L));
-        Assertions.assertFalse(currencyConverterService.areCurrenciesConnected(1L,6L));
+    public void testCurrencyConnectionList() {
+
+        Assertions.assertEquals(new ArrayList<>(),
+                currencyConverterService.currencyConnectionList(0L,1L));
+
+        Assertions.assertEquals(new ArrayList<>(),
+                currencyConverterService.currencyConnectionList(1L,6L));
+
+        Assertions.assertEquals(Arrays.asList(1,2,3,4),
+                currencyConverterService.currencyConnectionList(1L,2L));
+        Assertions.assertEquals(Arrays.asList(1,2,3,4),
+                currencyConverterService.currencyConnectionList(2L,4L));
+
+        Assertions.assertEquals(Arrays.asList(5,6),
+                currencyConverterService.currencyConnectionList(5L,6L));
 
 
-        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(1L,2L));
-        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(2L,4L));
-        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(5L,6L));
     }
 
 }
