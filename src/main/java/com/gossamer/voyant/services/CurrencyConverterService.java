@@ -68,7 +68,7 @@ public class CurrencyConverterService {
         return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);
     }
 
-    public void addNewCurrencyData(CurrencyData currencyData) {
+    public void updateCurrencyData(CurrencyData currencyData) {
         Map<Long, String> countriesToMap = countriesService.countriesToMap();
         //validate the new currency data
         currencyData.getCurrencyData().forEach(item -> {
@@ -87,7 +87,6 @@ public class CurrencyConverterService {
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         String.format("Problem with - %s to %s , %s", item.get(0), item.get(1), item.get(2)));
-
             }
         });
 
@@ -95,11 +94,26 @@ public class CurrencyConverterService {
             Long originCountryId = countriesService.getCountryId(item.get(0));
             Long conversionCountryId = countriesService.getCountryId(item.get(1));
             BigDecimal conversionRate = BigDecimal.valueOf(Double.parseDouble(item.get(2)));
-            conversionRatesDao.save(ConversionRates.builder()
-                    .originCountryFid(originCountryId)
-                    .conversionCountryFid(conversionCountryId)
-                    .conversionRate(conversionRate)
-                    .build());
+
+            //if row already exists update it instead of adding a new one
+            List<ConversionRates> existingConversionRate =
+                    conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryId, conversionCountryId);
+
+            if (existingConversionRate.isEmpty()) {
+                conversionRatesDao.save(ConversionRates.builder()
+                        .originCountryFid(originCountryId)
+                        .conversionCountryFid(conversionCountryId)
+                        .conversionRate(conversionRate)
+                        .build());
+            } else {
+                conversionRatesDao.save(ConversionRates.builder()
+                        .id(existingConversionRate.get(0).getId())
+                        .conversionRate(conversionRate)
+                        .originCountryFid(originCountryId)
+                        .conversionCountryFid(conversionCountryId)
+                        .build());
+            }
+
         });
     }
 

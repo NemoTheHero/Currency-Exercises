@@ -99,7 +99,7 @@ public class CurrencyConverterServiceTest {
         CurrencyData currencyData = CurrencyData.builder()
                 .currencyData(newCurrencyRates)
                 .build();
-        currencyConverterService.addNewCurrencyData(currencyData);
+        currencyConverterService.updateCurrencyData(currencyData);
 
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.01)
@@ -113,7 +113,54 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
-    public void shouldThrowIfCountryIsNotInSystem() {
+    public void addNewCurrencyDataShouldUpdateIfRateAlreadyExists() {
+        List<ConversionRatesWithCountryName> conversionRatesWithCountryNames =
+                currencyConverterService.getAllConversionRatesWithCountryName();
+        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(0).getOriginCountry());
+        Assertions.assertEquals("GDP", conversionRatesWithCountryNames.get(0).getConversionCountry());
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(0.72) //current conversion rate
+                        .compareTo(conversionRatesWithCountryNames.get(0).getConversionRate())
+        );
+
+        Assertions.assertEquals("CAD", conversionRatesWithCountryNames.get(2).getOriginCountry());
+        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(2).getConversionCountry());
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(0.78) //current conversion rate
+                        .compareTo(conversionRatesWithCountryNames.get(2).getConversionRate())
+        );
+
+        List<List<String>> newCurrencyRates = Arrays.asList(
+                Arrays.asList("USD", "GDP", ".75"),
+                Arrays.asList("CAD", "USD", ".90")
+        );
+
+        CurrencyData currencyData = CurrencyData.builder()
+                .currencyData(newCurrencyRates)
+                .build();
+        currencyConverterService.updateCurrencyData(currencyData);
+
+        List<ConversionRatesWithCountryName> updatedConversationRates =
+                currencyConverterService.getAllConversionRatesWithCountryName();
+
+        Assertions.assertEquals("USD", updatedConversationRates.get(0).getOriginCountry());
+        Assertions.assertEquals("GDP", updatedConversationRates.get(0).getConversionCountry());
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(0.75) // new value is .75
+                        .compareTo(updatedConversationRates.get(0).getConversionRate())
+        );
+
+        Assertions.assertEquals("CAD", updatedConversationRates.get(2).getOriginCountry());
+        Assertions.assertEquals("USD", updatedConversationRates.get(2).getConversionCountry());
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(0.90) // new value is .90
+                        .compareTo(updatedConversationRates.get(2).getConversionRate())
+        );
+
+    }
+
+    @Test
+    public void addNewCurrencyDataShouldThrowIfCountryIsNotInSystem() {
         //test originCountry
         ResponseStatusException exception = Assertions.assertThrows(
                 ResponseStatusException.class,
@@ -121,7 +168,7 @@ public class CurrencyConverterServiceTest {
                     List<List<String>> newCurrencyRates = List.of(
                             Arrays.asList("USA", "USD", ".01")
                     );
-                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                    currencyConverterService.updateCurrencyData(CurrencyData.builder()
                             .currencyData(newCurrencyRates)
                             .build());
                 }
@@ -137,7 +184,7 @@ public class CurrencyConverterServiceTest {
                     List<List<String>> newCurrencyRates = List.of(
                             Arrays.asList("YEN", "USA", ".01")
                     );
-                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                    currencyConverterService.updateCurrencyData(CurrencyData.builder()
                             .currencyData(newCurrencyRates)
                             .build());
                 }
@@ -155,7 +202,7 @@ public class CurrencyConverterServiceTest {
                     List<List<String>> newCurrencyRates = List.of(
                             Arrays.asList("YEN", "USD", "0.22O")
                     );
-                    currencyConverterService.addNewCurrencyData(CurrencyData.builder()
+                    currencyConverterService.updateCurrencyData(CurrencyData.builder()
                             .currencyData(newCurrencyRates)
                             .build());
                 }

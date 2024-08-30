@@ -39,9 +39,9 @@ public class CurrencyConverterController {
         return currencyConverterService.getConversionRate(originCountry,conversionCountry) ;
     }
 
-    @PostMapping("/addCurrencyConversions")
-    void addCurrencyConversions(@RequestBody CurrencyData currencyData) {
-        currencyConverterService.addNewCurrencyData(currencyData);
+    @PostMapping("/updateCurrencyConversions")
+    void updateCurrencyConversions(@RequestBody CurrencyData currencyData) {
+        currencyConverterService.updateCurrencyData(currencyData);
     }
 
 

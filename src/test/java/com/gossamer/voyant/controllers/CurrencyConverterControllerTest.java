@@ -101,12 +101,12 @@ public class CurrencyConverterControllerTest {
                 Arrays.asList("YEN", "USD", ".01")
         )).build();
 
-        Mockito.doNothing().when(currencyConverterService).addNewCurrencyData(payLoadExpectation);
+        Mockito.doNothing().when(currencyConverterService).updateCurrencyData(payLoadExpectation);
         MvcResult result = this.mockMvc.perform(RestDocumentationRequestBuilders
-                        .post("/currencyConvertor/addCurrencyConversions").contentType(MediaType.APPLICATION_JSON)
+                        .post("/currencyConvertor/updateCurrencyConversions").contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andDo(print()).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        Mockito.verify(currencyConverterService, Mockito.times(1)).addNewCurrencyData(Mockito.any());
+        Mockito.verify(currencyConverterService, Mockito.times(1)).updateCurrencyData(Mockito.any());
     }
 }
