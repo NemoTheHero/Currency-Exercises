@@ -2,6 +2,7 @@ package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
+import com.gossamer.voyant.entities.IncomeTaxBrackets;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
 import org.springframework.http.HttpStatus;
@@ -128,7 +129,7 @@ public class CurrencyConverterService {
         return merge(parent, parent[x]);
     }
 
-    public static List<List<Integer>> connectedConversionRates(int n, List<List<Integer>> edges) {
+    public static List<List<Integer>> getConnectedConversionRates(int n, List<List<Integer>> edges) {
         int[] parent = new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
@@ -164,7 +165,7 @@ public class CurrencyConverterService {
         return connectedCurrenciesList;
     }
 
-    List<List<Integer>> connectedConversionRates() {
+    List<List<Integer>> getConnectedConversionRates() {
         List<ConversionRates> allConversionRates = getAllConversionRates();
         List<Long> uniqueCurrenciesList = new ArrayList<>();
         List<List<Integer>> edges = new ArrayList<>();
@@ -181,11 +182,18 @@ public class CurrencyConverterService {
         });
 
         int n = uniqueCurrenciesList.size() + 1;
+        return getConnectedConversionRates(n, edges);
+    }
 
-        System.out.println("Unique currencies:" + n);
+    boolean areCurrenciesConnected(Long originCurrency, Long conversionCurrency) {
+        List<List<Integer>> connectedConversionRates = getConnectedConversionRates();
 
-        System.out.println("Following are connected components:");
-        return connectedConversionRates(n, edges);
+        for (List<Integer> connectedRates :connectedConversionRates) {
+            if (connectedRates.contains(originCurrency.intValue()) && connectedRates.contains(conversionCurrency.intValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

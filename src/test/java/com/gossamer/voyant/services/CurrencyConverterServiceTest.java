@@ -236,7 +236,7 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void connectedConversionRates() {
-        List<List<Integer>> connectedCurrencies = currencyConverterService.connectedConversionRates();
+        List<List<Integer>> connectedCurrencies = currencyConverterService.getConnectedConversionRates();
         Assertions.assertEquals(3, connectedCurrencies.size());
         Assertions.assertTrue(connectedCurrencies.get(0).contains(0));
         Assertions.assertTrue(connectedCurrencies.get(1).contains(1));
@@ -245,7 +245,17 @@ public class CurrencyConverterServiceTest {
         Assertions.assertTrue(connectedCurrencies.get(1).contains(4));
         Assertions.assertTrue(connectedCurrencies.get(2).contains(5));
         Assertions.assertTrue(connectedCurrencies.get(2).contains(6));
+    }
 
+    @Test
+    public void testAreCurrenciesConnected() {
+        Assertions.assertFalse(currencyConverterService.areCurrenciesConnected(0L,1L));
+        Assertions.assertFalse(currencyConverterService.areCurrenciesConnected(1L,6L));
+
+
+        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(1L,2L));
+        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(2L,4L));
+        Assertions.assertTrue(currencyConverterService.areCurrenciesConnected(5L,6L));
     }
 
 }
