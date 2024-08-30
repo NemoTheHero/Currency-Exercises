@@ -128,7 +128,7 @@ public class CurrencyConverterService {
         return merge(parent, parent[x]);
     }
 
-    public static int connectedConversionRates(int n, List<List<Integer>> edges) {
+    public static List<List<Integer>> connectedConversionRates(int n, List<List<Integer>> edges) {
         int[] parent = new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
@@ -152,19 +152,20 @@ public class CurrencyConverterService {
             m.computeIfAbsent(parent[i], k -> new ArrayList<>()).add(i);
         }
 
+        List<List<Integer>> connectedCurrenciesList= new ArrayList<>();
         for (Map.Entry<Integer, List<Integer>> it : m.entrySet()) {
             List<Integer> l = it.getValue();
+            connectedCurrenciesList.add(l);
             for (int x : l) {
                 System.out.print(x + " ");
             }
             System.out.println();
         }
-        return ans;
+        return connectedCurrenciesList;
     }
 
-    int connectedConversionRates() {
+    List<List<Integer>> connectedConversionRates() {
         List<ConversionRates> allConversionRates = getAllConversionRates();
-        int uniqueCurrencies = 0;
         List<Long> uniqueCurrenciesList = new ArrayList<>();
         List<List<Integer>> edges = new ArrayList<>();
 
@@ -175,8 +176,10 @@ public class CurrencyConverterService {
             if(!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {
                 uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());
             }
-            edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(), conversionRates.getConversionCountryFid().intValue()));
+            edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(),
+                    conversionRates.getConversionCountryFid().intValue()));
         });
+
         int n = uniqueCurrenciesList.size() + 1;
 
         System.out.println("Unique currencies:" + n);

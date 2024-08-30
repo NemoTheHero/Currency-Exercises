@@ -235,8 +235,8 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
-    public void testConnectedComponents() {
-        Assertions.assertEquals(3, currencyConverterService.connectedConversionRates());
+    public void connectedConversionRates() {
+        Assertions.assertEquals(3, currencyConverterService.connectedConversionRates().size());
     }
 
 }
