@@ -234,4 +234,9 @@ public class CurrencyConverterServiceTest {
                 currencyConverterService.reverseConversion(BigDecimal.valueOf(1.53846)).compareTo(BigDecimal.valueOf(.65)));
     }
 
+    @Test
+    public void testConnectedComponents() {
+        Assertions.assertEquals(3, currencyConverterService.connectedConversionRates());
+    }
+
 }

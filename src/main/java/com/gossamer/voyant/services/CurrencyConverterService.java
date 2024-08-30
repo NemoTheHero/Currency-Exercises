@@ -10,9 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CurrencyConverterService {
@@ -53,7 +51,7 @@ public class CurrencyConverterService {
             //check for inverse
             List<ConversionRates> inverseConversion = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(conversionCountryFid, originCountryFid);
             if (inverseConversion.isEmpty()) {
-                return null;
+                return getConversionByRelationship(originCountryFid, conversionCountryFid);
             }
             return reverseConversion(inverseConversion.get(0).getConversionRate());
         }
@@ -66,6 +64,13 @@ public class CurrencyConverterService {
         }
 
         return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);
+    }
+
+    public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
+
+
+
+        return null;
     }
 
     public void updateCurrencyData(CurrencyData currencyData) {
@@ -115,6 +120,69 @@ public class CurrencyConverterService {
             }
 
         });
+    }
+
+    public static int merge(int[] parent, int x) {
+        if (parent[x] == x)
+            return x;
+        return merge(parent, parent[x]);
+    }
+
+    public static int connectedConversionRates(int n, List<List<Integer>> edges) {
+        int[] parent = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+        }
+
+        for (List<Integer> x : edges) {
+            parent[merge(parent, x.get(0))] = merge(parent, x.get(1));
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (parent[i] == i) ans++;
+        }
+
+        for (int i = 0; i < n; i++) {
+            parent[i] = merge(parent, parent[i]);
+        }
+
+        Map<Integer, List<Integer>> m = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            m.computeIfAbsent(parent[i], k -> new ArrayList<>()).add(i);
+        }
+
+        for (Map.Entry<Integer, List<Integer>> it : m.entrySet()) {
+            List<Integer> l = it.getValue();
+            for (int x : l) {
+                System.out.print(x + " ");
+            }
+            System.out.println();
+        }
+        return ans;
+    }
+
+    int connectedConversionRates() {
+        List<ConversionRates> allConversionRates = getAllConversionRates();
+        int uniqueCurrencies = 0;
+        List<Long> uniqueCurrenciesList = new ArrayList<>();
+        List<List<Integer>> edges = new ArrayList<>();
+
+        allConversionRates.forEach(conversionRates -> {
+            if(!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {
+                uniqueCurrenciesList.add(conversionRates.getOriginCountryFid());
+            }
+            if(!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {
+                uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());
+            }
+            edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(), conversionRates.getConversionCountryFid().intValue()));
+        });
+        int n = uniqueCurrenciesList.size() + 1;
+
+        System.out.println("Unique currencies:" + n);
+
+        System.out.println("Following are connected components:");
+        return connectedConversionRates(n, edges);
     }
 
 

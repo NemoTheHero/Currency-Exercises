@@ -18,6 +18,8 @@ public interface ConversionRatesDao
 
     List<ConversionRates> findByOriginCountryFidAndConversionCountryFid(Long originCountryFid, Long conversionCountryFid);
 
+    List<ConversionRates> findByOriginCountryFid(Long originCountryFid);
+
 
 
 }
