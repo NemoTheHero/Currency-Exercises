@@ -21,7 +21,7 @@
     <description>VoyantExercise</description>
 
     <properties>
-        <java.version>22</java.version>
+        <java.version>20</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

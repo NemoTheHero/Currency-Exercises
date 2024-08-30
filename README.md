@@ -1,6 +1,6 @@
-This project uses JAVA 22 and runs with Spring Boot.
+This project uses JAVA 20 and runs with Spring Boot.
 
-Make sure to run maven install on the project to get all dependencies.
+Make sure to run "mvn clean install" on the project to get all dependencies.
 
 On run the project will create a H2 Database using a file
 on your computer. It should be located at
