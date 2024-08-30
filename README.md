@@ -1,3 +1,21 @@
+This project uses JAVA 22 and runs with Spring Boot.
+
+Make sure to run maven install on the project to get all dependencies.
+
+On run the project will create a H2 Database using a file
+on your computer. It should be located at
+For Windows
+C:\Users\{User}\data\currencydemo.mv.db
+Running Tests will create a H2Database file as well located at
+C:\Users\{User}\data\currencydemotest.mv.db
+
+You can update this in the application.properties in the resources directory.
+
+You can see the Database while running the application locally
+at http://localhost:{portNumber}/h2-console
+portNumber is usually 8080.
+
+
 There are 3 exercises in 3 classes defined in src/java/com.gossamer.voyant.interviews package.
 
 They are meant to be straightforward.  There are no gotchas.
