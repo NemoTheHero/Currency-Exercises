@@ -12,23 +12,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("incomeTax")
-public class IncomeTaxController {
+public class IncomeTaxSystemController {
 
     private final IncomeTaxSystemService incomeTaxSystemService;
 
-    public IncomeTaxController(IncomeTaxSystemService incomeTaxSystemService) {
+    public IncomeTaxSystemController(IncomeTaxSystemService incomeTaxSystemService) {
         this.incomeTaxSystemService = incomeTaxSystemService;
     }
 
-    @GetMapping("/getAllIncomeTaxes")
-    List<IncomeTaxBrackets> getAllConversionRates() {
-
+    @GetMapping("/getAllIncomeTaxesBrackets")
+    List<IncomeTaxBrackets> getAllIncomeTaxBrackets() {
         return incomeTaxSystemService.getAllTaxBrackets() ;
     }
 
     @GetMapping("/getIncomeTaxBracketsForIncome")
     List<IncomeTaxBrackets> getIncomeTaxBracketsForIncome(@RequestParam BigDecimal income) {
-
         return incomeTaxSystemService.getIncomeBracketsForIncomeLowToHigh(income) ;
     }
 
