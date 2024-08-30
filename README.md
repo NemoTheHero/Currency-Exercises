@@ -17,6 +17,7 @@ You can see the Database while running the application locally
 at http://localhost:{portNumber}/h2-console
 username = sa
 password = password2024!
+jdbc-url should be = jdbc:h2:file:~/data/currencydemo
 portNumber is usually 8080.
 
 
