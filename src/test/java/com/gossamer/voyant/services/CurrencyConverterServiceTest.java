@@ -158,8 +158,26 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(
                 String.format("422 UNPROCESSABLE_ENTITY \"Problem with - %s to %s , %s\"", "YEN", "USD", "0.22O"),
                 exception.getMessage());
+    }
 
+    @Test
+    public void shouldInverseExchangeRate() {
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(BigDecimal.valueOf(0)).compareTo(BigDecimal.valueOf(0)));
 
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(null).compareTo(BigDecimal.valueOf(0)));
+
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(BigDecimal.valueOf(0.8)).compareTo(BigDecimal.valueOf(1.25)));
+
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(BigDecimal.valueOf(1.25)).compareTo(BigDecimal.valueOf(.8)));
+
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(BigDecimal.valueOf(0.65)).compareTo(BigDecimal.valueOf(1.53846)));
+        Assertions.assertEquals(0,
+                currencyConverterService.reverseConversion(BigDecimal.valueOf(1.53846)).compareTo(BigDecimal.valueOf(.65)));
     }
 
 }

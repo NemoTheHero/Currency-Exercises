@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,14 @@ public class CurrencyConverterService {
         return conversionRates.get(0).getConversionRate();
     }
 
+    public BigDecimal reverseConversion(BigDecimal exchangeRate) {
+        if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);
+    }
+
     public void addNewCurrencyData(CurrencyData currencyData) {
         Map<Long, String> countriesToMap = countriesService.countriesToMap();
         //validate the new currency data
@@ -89,4 +98,6 @@ public class CurrencyConverterService {
                     .build());
         });
     }
+
+
 }
