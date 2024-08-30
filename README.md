@@ -9,6 +9,8 @@ C:\Users\{User}\data\currencydemo.mv.db
 Running Tests will create a H2Database file as well located at
 C:\Users\{User}\data\currencydemotest.mv.db
 
+For Mac this will be placed in Users/{User}/data
+
 You can update this in the application.properties in the resources directory.
 
 You can see the Database while running the application locally
