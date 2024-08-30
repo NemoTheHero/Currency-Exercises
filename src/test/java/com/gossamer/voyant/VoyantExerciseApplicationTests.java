@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class VoyantExerciseApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void applicationStart() {
+        VoyantJavaInterview.main(new String[] {});
     }
-
 }

@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > IncomeTaxSystem</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.gossamer.voyant.interviews</a>
+</div>
+
+<h1>Coverage Summary for Class: IncomeTaxSystem (com.gossamer.voyant.interviews)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IncomeTaxSystem</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/**
+&nbsp; * Copyright 2006-2018 Voyant, Inc..  All Rights Reserved.
+&nbsp; * &lt;p&gt;
+&nbsp; * Date: 12/1/2017
+&nbsp; * Time: 10:06 AM
+&nbsp; */
+&nbsp;
+&nbsp;package com.gossamer.voyant.interviews;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * Progressive Tax regimes often have a table like the following to define how basic income tax is calculated
+&nbsp; * &lt;pre&gt;
+&nbsp; * Bracket  Bracket Range   Tax Rate
+&nbsp; * ========================================
+&nbsp; * 1        0-20,000        10%
+&nbsp; * 2        20,000-50,000   15%
+&nbsp; * 3        50,000-100,000  20%
+&nbsp; * 4        100,000 &gt;       25%
+&nbsp; * &lt;/pre&gt;
+&nbsp; * &lt;p&gt;
+&nbsp; * For this class, create a data structure to represent this tax regime, and then use your data structure to implement
+&nbsp; * the  method
+&nbsp; * &lt;strong&gt;calculateIncomeTax(double income)&lt;/strong&gt;
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * &lt;p&gt;
+&nbsp; *     For this exercise you can hard code the above data to initialize your IncomeTaxSystem, but your
+&nbsp; *     data structure should be flexible enough to represent other tables with differing ranges and less or more brackets.
+&nbsp; * &lt;/p&gt;
+&nbsp; *
+&nbsp; * &lt;p&gt;
+&nbsp; * Addiontally implement:
+&nbsp; *
+&nbsp; * methods
+&nbsp; * &lt;strong&gt;determineMarginalTaxRate(income)&lt;/strong&gt;
+&nbsp; * and
+&nbsp; * &lt;strong&gt;determineEffectiveTaxRate(income)&lt;/strong&gt;
+&nbsp; *  methods.
+&nbsp; * &lt;/p&gt;
+&nbsp; */
+<b class="nc">&nbsp;public class IncomeTaxSystem {</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calculate the total tax on the income given the tax regime modelled by this IncomeTaxSystem
+&nbsp;     * @param income
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    public double calculateIncomeTax(double income) {
+<b class="nc">&nbsp;        return 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Given an income, determine the marginal tax rate, meaning the tax rate applied to the last dollar of income.
+&nbsp;     * @param income
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    public double determineMarginalTaxRate(double income) {
+<b class="nc">&nbsp;        return 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Given an income, determine the average tax rate that the entire income was taxed at
+&nbsp;     * @param income
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    public double determineEffectiveTaxRate(double income) {
+<b class="nc">&nbsp;        return 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    public static void main(String[] args) {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-08-29 23:02</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > IntRange</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.gossamer.voyant.interviews</a>
+</div>
+
+<h1>Coverage Summary for Class: IntRange (com.gossamer.voyant.interviews)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IntRange</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;/**
+&nbsp; * Copyright 2006-2018 Voyant, Inc..  All Rights Reserved.
+&nbsp; * Date: 12/1/2017
+&nbsp; * Time: 10:01 AM
+&nbsp; */
+&nbsp;
+&nbsp;package com.gossamer.voyant.interviews;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;/**
+&nbsp; * Implementation of a classic Integer range,
+&nbsp; *
+&nbsp; * Assume  values are inclusive, and highest value is exclusive
+&nbsp; * e.g. [2,5] [6,10]
+&nbsp; *
+&nbsp; *
+&nbsp; * Implement this class, and the overlaps method below
+&nbsp; *
+&nbsp; *
+&nbsp; *
+&nbsp; */
+&nbsp;@Component
+<b class="fc">&nbsp;public class IntRange {</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determines whether 2 ranges overlap: e.g.
+&nbsp;     * [2,5] and [4,6] =&gt; true
+&nbsp;     * [2,4] and [5,6] =&gt; false
+&nbsp;     * [2,5] and [5,6] =&gt; false
+&nbsp;     *
+&nbsp;     * note: The signature of this method&#39;s parameters are incomplete.  Please specify as part of the exercise
+&nbsp;     *
+&nbsp;     * @return true if the provided range overlaps with this range
+&nbsp;     */
+&nbsp;    public boolean overlaps(int[] array1, int[] array2) {
+&nbsp;
+<b class="fc">&nbsp;        if (array1 == null || array1.length != 2 ||array2 == null || array2.length != 2) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        int smallestInArray1 = Math.min(array1[0], array1[1]);</b>
+<b class="fc">&nbsp;        int largestInArray1 = Math.max(array1[0], array1[1]);</b>
+&nbsp;
+<b class="fc">&nbsp;        int smallestInArray2 = Math.min(array2[0], array2[1]);</b>
+<b class="fc">&nbsp;        int largestInArray2 = Math.max(array2[0], array2[1]);</b>
+&nbsp;
+<b class="fc">&nbsp;        return largestInArray1 &gt;= smallestInArray2 &amp;&amp; largestInArray2 &gt;= smallestInArray1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-08-30 09:50</div>
+</div>
+</body>
+</html>
