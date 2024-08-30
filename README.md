@@ -15,6 +15,8 @@ You can update this in the application.properties in the resources directory.
 
 You can see the Database while running the application locally
 at http://localhost:{portNumber}/h2-console
+username = sa
+password = password2024!
 portNumber is usually 8080.
 
 
