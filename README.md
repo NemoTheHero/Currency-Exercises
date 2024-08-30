@@ -1,4 +1,4 @@
-This project uses JAVA 20 and runs with Spring Boot.
+This project uses JAVA 21 and runs with Spring Boot.
 
 Make sure to run "mvn clean install" on the project to get all dependencies.
 
