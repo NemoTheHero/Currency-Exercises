@@ -237,7 +237,7 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void connectedConversionRates() {
-        List<List<Integer>> connectedCurrencies = currencyConverterService.getConnectedConversionRates();
+        List<List<Integer>> connectedCurrencies = currencyConverterService.getConnectedConversionRates(currencyConverterService.getAllConversionRates());
         Assertions.assertEquals(3, connectedCurrencies.size());
         Assertions.assertTrue(connectedCurrencies.get(0).contains(0));
         Assertions.assertTrue(connectedCurrencies.get(1).contains(1));
@@ -250,22 +250,32 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void testCurrencyConnectionList() {
+        List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
+
 
         Assertions.assertEquals(new ArrayList<>(),
-                currencyConverterService.currencyConnectionList(0L,1L));
+                currencyConverterService.currencyConnectionList(0L,1L, allConversionRates));
 
         Assertions.assertEquals(new ArrayList<>(),
-                currencyConverterService.currencyConnectionList(1L,6L));
+                currencyConverterService.currencyConnectionList(5L,8L, allConversionRates));
+
+        Assertions.assertEquals(new ArrayList<>(),
+                currencyConverterService.currencyConnectionList(1L,6L, allConversionRates));
 
         Assertions.assertEquals(Arrays.asList(1,2,3,4),
-                currencyConverterService.currencyConnectionList(1L,2L));
+                currencyConverterService.currencyConnectionList(1L,2L, allConversionRates));
         Assertions.assertEquals(Arrays.asList(1,2,3,4),
-                currencyConverterService.currencyConnectionList(2L,4L));
+                currencyConverterService.currencyConnectionList(2L,4L, allConversionRates));
 
         Assertions.assertEquals(Arrays.asList(5,6),
-                currencyConverterService.currencyConnectionList(5L,6L));
+                currencyConverterService.currencyConnectionList(5L,6L, allConversionRates));
 
 
+    }
+
+    @Test
+    public void testGetConversionByRelationship() {
+        currencyConverterService.getConversionByRelationship(1L,4L);
     }
 
 }

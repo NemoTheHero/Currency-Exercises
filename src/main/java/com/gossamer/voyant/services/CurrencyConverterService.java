@@ -2,9 +2,9 @@ package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.entities.IncomeTaxBrackets;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+
+import static java.util.Map.entry;
 
 @Service
 public class CurrencyConverterService {
@@ -67,13 +69,6 @@ public class CurrencyConverterService {
         return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);
     }
 
-    public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
-
-        if (!currencyConnectionList(originCountryFid, conversionCountryFid).isEmpty()) {
-            return BigDecimal.ONE;
-        }
-        return null;
-    }
 
     public void updateCurrencyData(CurrencyData currencyData) {
         Map<Long, String> countriesToMap = countriesService.countriesToMap();
@@ -154,7 +149,7 @@ public class CurrencyConverterService {
             m.computeIfAbsent(parent[i], k -> new ArrayList<>()).add(i);
         }
 
-        List<List<Integer>> connectedCurrenciesList= new ArrayList<>();
+        List<List<Integer>> connectedCurrenciesList = new ArrayList<>();
         for (Map.Entry<Integer, List<Integer>> it : m.entrySet()) {
             List<Integer> l = it.getValue();
             connectedCurrenciesList.add(l);
@@ -166,16 +161,16 @@ public class CurrencyConverterService {
         return connectedCurrenciesList;
     }
 
-    List<List<Integer>> getConnectedConversionRates() {
-        List<ConversionRates> allConversionRates = getAllConversionRates();
+    //Get all rates that are in a Set together using the Union-Find Algorithm
+    List<List<Integer>> getConnectedConversionRates(List<ConversionRates> allConversionRates) {
         List<Long> uniqueCurrenciesList = new ArrayList<>();
         List<List<Integer>> edges = new ArrayList<>();
 
         allConversionRates.forEach(conversionRates -> {
-            if(!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {
+            if (!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {
                 uniqueCurrenciesList.add(conversionRates.getOriginCountryFid());
             }
-            if(!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {
+            if (!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {
                 uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());
             }
             edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(),
@@ -186,15 +181,57 @@ public class CurrencyConverterService {
         return getConnectedConversionRates(n, edges);
     }
 
-    List<Integer> currencyConnectionList(Long originCurrency, Long conversionCurrency) {
-        List<List<Integer>> connectedConversionRates = getConnectedConversionRates();
-
-        for (List<Integer> connectedRates :connectedConversionRates) {
+    List<Integer> currencyConnectionList(Long originCurrency, Long conversionCurrency, List<ConversionRates> allConversionRates) {
+        List<List<Integer>> connectedConversionRates = getConnectedConversionRates(allConversionRates);
+        for (List<Integer> connectedRates : connectedConversionRates) {
             if (connectedRates.contains(originCurrency.intValue()) && connectedRates.contains(conversionCurrency.intValue())) {
                 return connectedRates;
             }
         }
         return new ArrayList<>();
+    }
+
+
+    public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
+
+        List<ConversionRates> allConversionRates = getAllConversionRates();
+        List<Integer> conversionsInGroup = currencyConnectionList(originCountryFid, conversionCountryFid, allConversionRates);
+        if (conversionsInGroup.isEmpty()) {
+            return null;
+        }
+
+        //filter out rates with only ones that connected
+        List<ConversionRates> connectedConversionRates = allConversionRates.stream().filter(conversionRates ->
+                conversionsInGroup.contains(conversionRates.getConversionCountryFid().intValue()) ||
+                        conversionsInGroup.contains(conversionRates.getOriginCountryFid().intValue())).toList();
+
+
+        MultiKeyMap<Long,BigDecimal> connectedConversionRateMap = convertRateArrayToMap(connectedConversionRates);
+
+        System.out.println(connectedConversionRateMap);
+
+        return null;
+    }
+
+//    HashMap<Long, HashMap<Long, BigDecimal>>
+//    determineMissingConversionRates(HashMap<Long, HashMap<Long, BigDecimal>>
+//                                            connectedConversionRateMap) {
+//
+//        MultiKeyMap<Long,BigDecimal>
+//
+//        return new HashMap<>();
+//    }
+
+
+    MultiKeyMap<Long,BigDecimal> convertRateArrayToMap(List<ConversionRates> conversionRatesList) {
+        MultiKeyMap <Long,BigDecimal> multiKeyMap = new MultiKeyMap<>();
+        HashMap<Long, HashMap<Long, BigDecimal>> conversionRateMap = new HashMap<>();
+        for (ConversionRates conversionRates : conversionRatesList) {
+            multiKeyMap.put(conversionRates
+                    .getOriginCountryFid(), conversionRates
+                    .getConversionCountryFid(), conversionRates.getConversionRate());
+        }
+        return multiKeyMap;
     }
 
 
