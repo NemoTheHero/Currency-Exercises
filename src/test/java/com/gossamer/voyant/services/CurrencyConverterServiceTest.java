@@ -278,10 +278,10 @@ public class CurrencyConverterServiceTest {
 
 
         List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
-        Assertions.assertEquals(Arrays.asList(1, 2, 3), currencyConverterService.testBfs(1L,3L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1, 4), currencyConverterService.testBfs(1L,4L, allConversionRates));
-        Assertions.assertEquals(null, currencyConverterService.testBfs(2L,6L, allConversionRates));
-        Assertions.assertNull(currencyConverterService.testBfs(0L,3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1, 2, 3), currencyConverterService.shortestPathBetweenConversionRates(1L,3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1, 4), currencyConverterService.shortestPathBetweenConversionRates(1L,4L, allConversionRates));
+        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(2L,6L, allConversionRates));
+        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(0L,3L, allConversionRates));
     }
 
 }

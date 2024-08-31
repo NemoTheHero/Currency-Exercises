@@ -12,8 +12,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static java.util.Map.entry;
-
 @Service
 public class CurrencyConverterService {
 
@@ -194,15 +192,15 @@ public class CurrencyConverterService {
     public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
 
         List<ConversionRates> allConversionRates = getAllConversionRates();
-        List<Integer> conversionsInGroup = currencyConnectionList(originCountryFid, conversionCountryFid, allConversionRates);
-        if (conversionsInGroup.isEmpty()) {
+        List<Integer> shortestPath = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
+        if (shortestPath == null) {
             return null;
         }
 
         //filter out rates with only ones that connected
-        List<ConversionRates> connectedConversionRates = allConversionRates.stream().filter(conversionRates ->
-                conversionsInGroup.contains(conversionRates.getConversionCountryFid().intValue()) ||
-                        conversionsInGroup.contains(conversionRates.getOriginCountryFid().intValue())).toList();
+        for(int i = 0; i < shortestPath.size(); i++) {
+
+        }
 
         return null;
     }
@@ -250,7 +248,9 @@ public class CurrencyConverterService {
         }
     }
 
-    public List<Integer> testBfs(Long originCurrencyId, Long conversionCurrencyId, List<ConversionRates> allConversionRates) {
+    public List<Integer> shortestPathBetweenConversionRates(Long originCurrencyId,
+                                                            Long conversionCurrencyId,
+                                                            List<ConversionRates> allConversionRates) {
 
 
         List<List<Integer>> edges = new ArrayList<>();
@@ -285,12 +285,12 @@ public class CurrencyConverterService {
             graph.get(edge.get(1)).add(edge.get(0));
         }
 
-        return printShortestDistance(graph, originCurrencyId.intValue(), conversionCurrencyId.intValue(), V);
+        return getShortestDistance(graph, originCurrencyId.intValue(), conversionCurrencyId.intValue(), V);
 
     }
 
-     private List<Integer> printShortestDistance(List<List<Integer>> graph, int S,
-                          int D, int V) {
+     private List<Integer> getShortestDistance(List<List<Integer>> graph, int S,
+                                               int D, int V) {
         // par[] array stores the parent of nodes
         List<Integer> par
                 = new ArrayList<>(Collections.nCopies(V, -1));
