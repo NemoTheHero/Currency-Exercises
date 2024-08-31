@@ -120,11 +120,11 @@ public class CurrencyConverterServiceTest {
         currencyConverterService.getConversionRate("CHF", "USD");
 
 
-        Assertions.assertEquals(14,
+        Assertions.assertEquals(15,
                 currencyConverterService.getAllConversionRates().size());
         Assertions.assertEquals(3,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
-        Assertions.assertEquals(2,
+        Assertions.assertEquals(3,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("GDP")).size());
         Assertions.assertEquals(2,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());

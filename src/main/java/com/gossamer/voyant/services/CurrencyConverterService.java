@@ -206,12 +206,13 @@ public class CurrencyConverterService {
         List<ConversionRates> allConversionRates = getAllConversionRates();
         List<Long> pathFromOriginToTarget = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
 
-        for(Long path: pathFromOriginToTarget) {
-            System.out.print(path + " ");
-        }
+
 
         if (pathFromOriginToTarget == null) {
             return null;
+        }
+        for(Long path: pathFromOriginToTarget) {
+            System.out.print(path + " ");
         }
         MultiKeyMap<Long, BigDecimal> conversionRateMap = convertConversionRateArrayToMap(allConversionRates);
         MultiKeyMap<Long, BigDecimal> newDeterminedConversionRates = convertConversionRateArrayToMap(allConversionRates);
