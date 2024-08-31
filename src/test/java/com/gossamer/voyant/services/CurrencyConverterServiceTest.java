@@ -30,7 +30,7 @@ public class CurrencyConverterServiceTest {
     @Test
     public void shouldHaveCurrenciesOnStartup() {
         List<ConversionRates> countriesList = currencyConverterService.getAllConversionRates();
-        Assertions.assertEquals(6, countriesList.size());
+        Assertions.assertEquals(8, countriesList.size());
     }
 
     @Test
@@ -306,9 +306,9 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(new ArrayList<>(),
                 currencyConverterService.currencyConnectionList(1L,6L, allConversionRates));
 
-        Assertions.assertEquals(Arrays.asList(1,2,3,4,7),
+        Assertions.assertEquals(Arrays.asList(1,2,3,4,7,8,9),
                 currencyConverterService.currencyConnectionList(1L,2L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1,2,3,4,7),
+        Assertions.assertEquals(Arrays.asList(1,2,3,4,7,8,9),
                 currencyConverterService.currencyConnectionList(2L,4L, allConversionRates));
 
         Assertions.assertEquals(Arrays.asList(5,6),
@@ -322,8 +322,11 @@ public class CurrencyConverterServiceTest {
 
 
         List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
-        Assertions.assertEquals(Arrays.asList(1, 2, 3), currencyConverterService.shortestPathBetweenConversionRates(1L,3L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1, 4), currencyConverterService.shortestPathBetweenConversionRates(1L,4L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 2L, 3L), currencyConverterService.shortestPathBetweenConversionRates(1L,3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(4L, 1L, 2L, 7L), currencyConverterService.shortestPathBetweenConversionRates(4L,7L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(9L, 7L, 2L, 1L), currencyConverterService.shortestPathBetweenConversionRates(9L,1L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 2L, 7L, 9L), currencyConverterService.shortestPathBetweenConversionRates(1L,9L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 4L), currencyConverterService.shortestPathBetweenConversionRates(1L,4L, allConversionRates));
         Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(2L,6L, allConversionRates));
         Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(0L,3L, allConversionRates));
     }
