@@ -4,7 +4,6 @@ import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
-import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -205,33 +204,124 @@ public class CurrencyConverterService {
                 conversionsInGroup.contains(conversionRates.getConversionCountryFid().intValue()) ||
                         conversionsInGroup.contains(conversionRates.getOriginCountryFid().intValue())).toList();
 
-
-        MultiKeyMap<Long,BigDecimal> connectedConversionRateMap = convertRateArrayToMap(connectedConversionRates);
-
-        System.out.println(connectedConversionRateMap);
-
         return null;
     }
 
-//    HashMap<Long, HashMap<Long, BigDecimal>>
-//    determineMissingConversionRates(HashMap<Long, HashMap<Long, BigDecimal>>
-//                                            connectedConversionRateMap) {
-//
-//        MultiKeyMap<Long,BigDecimal>
-//
-//        return new HashMap<>();
-//    }
 
+    public static void addEdge(List<List<Integer>> adj,
+                               int u, int v) {
+        adj.get(u).add(v);
+        adj.get(v).add(u); // Undirected graph
+    }
 
-    MultiKeyMap<Long,BigDecimal> convertRateArrayToMap(List<ConversionRates> conversionRatesList) {
-        MultiKeyMap <Long,BigDecimal> multiKeyMap = new MultiKeyMap<>();
-        HashMap<Long, HashMap<Long, BigDecimal>> conversionRateMap = new HashMap<>();
-        for (ConversionRates conversionRates : conversionRatesList) {
-            multiKeyMap.put(conversionRates
-                    .getOriginCountryFid(), conversionRates
-                    .getConversionCountryFid(), conversionRates.getConversionRate());
+    static void bfs(List<List<Integer>> graph, int S,
+                    List<Integer> par, List<Integer> dist) {
+        // Queue to store the nodes in the order they are
+        // visited
+        Queue<Integer> q = new LinkedList<>();
+        // Mark the distance of the source node as 0
+        dist.set(S, 0);
+        // Push the source node to the queue
+        q.add(S);
+
+        // Iterate until the queue is not empty
+        while (!q.isEmpty()) {
+            // Pop the node at the front of the queue
+            int node = q.poll();
+
+            // Explore all the neighbors of the current node
+            for (int neighbor : graph.get(node)) {
+                // Check if the neighboring node is not
+                // visited
+                if (dist.get(neighbor)
+                        == Integer.MAX_VALUE) {
+                    // Mark the current node as the parent
+                    // of the neighboring node
+                    par.set(neighbor, node);
+                    // Mark the distance of the neighboring
+                    // node as the distance of the current
+                    // node + 1
+                    dist.set(neighbor, dist.get(node) + 1);
+                    // Insert the neighboring node to the
+                    // queue
+                    q.add(neighbor);
+                }
+            }
         }
-        return multiKeyMap;
+    }
+
+    public List<Integer> testBfs(Long originCurrencyId, Long conversionCurrencyId, List<ConversionRates> allConversionRates) {
+
+
+        List<List<Integer>> edges = new ArrayList<>();
+        List<Long> uniqueCurrenciesList = new ArrayList<>();
+
+
+        allConversionRates.forEach(conversionRates -> {
+            if (!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {
+                uniqueCurrenciesList.add(conversionRates.getOriginCountryFid());
+            }
+            if (!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {
+                uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());
+            }
+        });
+
+        // Number of vertices in the graph
+        int V = uniqueCurrenciesList.size() + 1;
+
+
+        // Add edges to the graph
+        allConversionRates.forEach(conversionRates -> edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(),
+                conversionRates.getConversionCountryFid().intValue())));
+
+
+        List<List<Integer>> graph = new ArrayList<>(V);
+        for (int i = 0; i < V; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (List<Integer> edge : edges) {
+            graph.get(edge.get(0)).add(edge.get(1));
+            graph.get(edge.get(1)).add(edge.get(0));
+        }
+
+        return printShortestDistance(graph, originCurrencyId.intValue(), conversionCurrencyId.intValue(), V);
+
+    }
+
+     private List<Integer> printShortestDistance(List<List<Integer>> graph, int S,
+                          int D, int V) {
+        // par[] array stores the parent of nodes
+        List<Integer> par
+                = new ArrayList<>(Collections.nCopies(V, -1));
+
+        // dist[] array stores the distance of nodes from S
+        List<Integer> dist = new ArrayList<>(
+                Collections.nCopies(V, Integer.MAX_VALUE));
+
+        // Function call to find the distance of all nodes
+        // and their parent nodes
+        bfs(graph, S, par, dist);
+
+        if (dist.get(D) == Integer.MAX_VALUE) {
+            System.out.println(
+                    "Source and Destination are not connected");
+            return null;
+        }
+
+        // List path stores the shortest path
+        List<Integer> path = new ArrayList<>();
+        int currentNode = D;
+        path.add(D);
+        while (par.get(currentNode) != -1) {
+            path.add(par.get(currentNode));
+            currentNode = par.get(currentNode);
+        }
+
+        // Printing path from source to destination
+        for (int i = path.size() - 1; i >= 0; i--)
+            System.out.print(path.get(i) + " ");
+        return path.reversed();
     }
 
 

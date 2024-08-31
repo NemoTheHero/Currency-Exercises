@@ -26,7 +26,7 @@ public class CountryServiceTest {
     @Test
     public void shouldHaveCountriesOnStartup() {
         List<Country> countryList = countriesService.getAllCountries();
-        Assertions.assertEquals(6, countryList.size());
+        Assertions.assertEquals(7, countryList.size());
     }
 
     @Test
@@ -42,8 +42,8 @@ public class CountryServiceTest {
 
     @Test
     public void shouldAddCountry() {
-        countriesService.addCountry("USA");
-        Assertions.assertEquals(7, countriesService.getCountryId("USA"));
+        countriesService.addCountry("CNY");
+        Assertions.assertEquals(8, countriesService.getCountryId("CNY"));
     }
 
     @Test

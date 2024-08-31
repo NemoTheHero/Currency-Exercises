@@ -30,7 +30,7 @@ public class CurrencyConverterServiceTest {
     @Test
     public void shouldHaveCurrenciesOnStartup() {
         List<ConversionRates> countriesList = currencyConverterService.getAllConversionRates();
-        Assertions.assertEquals(4, countriesList.size());
+        Assertions.assertEquals(6, countriesList.size());
     }
 
     @Test
@@ -262,9 +262,9 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(new ArrayList<>(),
                 currencyConverterService.currencyConnectionList(1L,6L, allConversionRates));
 
-        Assertions.assertEquals(Arrays.asList(1,2,3,4),
+        Assertions.assertEquals(Arrays.asList(1,2,3,4,7),
                 currencyConverterService.currencyConnectionList(1L,2L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1,2,3,4),
+        Assertions.assertEquals(Arrays.asList(1,2,3,4,7),
                 currencyConverterService.currencyConnectionList(2L,4L, allConversionRates));
 
         Assertions.assertEquals(Arrays.asList(5,6),
@@ -275,7 +275,13 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void testGetConversionByRelationship() {
-        currencyConverterService.getConversionByRelationship(1L,4L);
+
+
+        List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
+        Assertions.assertEquals(Arrays.asList(1, 2, 3), currencyConverterService.testBfs(1L,3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1, 4), currencyConverterService.testBfs(1L,4L, allConversionRates));
+        Assertions.assertEquals(null, currencyConverterService.testBfs(2L,6L, allConversionRates));
+        Assertions.assertNull(currencyConverterService.testBfs(0L,3L, allConversionRates));
     }
 
 }
