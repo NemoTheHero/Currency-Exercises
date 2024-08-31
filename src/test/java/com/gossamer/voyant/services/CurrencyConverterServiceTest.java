@@ -130,29 +130,62 @@ public class CurrencyConverterServiceTest {
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
         Assertions.assertEquals(3,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("CHF")).size());
-
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("MEX"),
-                countriesService.getCountryId("USD")).isEmpty());
     }
     @Test
     public void getConversionRateShouldCreateDirectConversionsToNodesAlongPath() {
         Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("CHF"),
-                countriesService.getCountryId("USD")).isEmpty());
-
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
+                countriesService.getCountryId("CHF")).isEmpty());
         Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("CHF"),
                 countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("USD")).isEmpty());
+
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("MEX")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
+                countriesService.getCountryId("GDP")).isEmpty());
+
 
         currencyConverterService.getConversionRate("CHF", "USD");
 
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
+                countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("CHF"),
                 countriesService.getCountryId("USD")).isEmpty());
 
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("MEX")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
                 countriesService.getCountryId("GDP")).isEmpty());
 
     }

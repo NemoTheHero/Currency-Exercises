@@ -205,6 +205,11 @@ public class CurrencyConverterService {
 
         List<ConversionRates> allConversionRates = getAllConversionRates();
         List<Long> pathFromOriginToTarget = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
+
+        for(Long path: pathFromOriginToTarget) {
+            System.out.print(path + " ");
+        }
+
         if (pathFromOriginToTarget == null) {
             return null;
         }
@@ -232,8 +237,8 @@ public class CurrencyConverterService {
                 //check if conversion exists from current node to origin if it doesnt determine it to be added
 
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
-                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
-                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
+                            pathFromOriginToTarget.get(originIndex), finalConversionRate);
                 }
 
                 //check if reverse exists, if not add it to newDeterminedConversionRates
