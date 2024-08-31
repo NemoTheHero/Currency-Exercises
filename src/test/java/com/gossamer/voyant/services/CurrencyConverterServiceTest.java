@@ -56,9 +56,6 @@ public class CurrencyConverterServiceTest {
     @Test
     public void shouldDetermineConversionRateByRelationship() {
 
-//        Assertions.assertEquals(new BigDecimal(".9"),
-//                currencyConverterService.getConversionRate("USD", "MEX")
-//        );
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(.9)
                         .compareTo(currencyConverterService.getConversionRate("USD", "MEX"))
@@ -73,6 +70,8 @@ public class CurrencyConverterServiceTest {
                 BigDecimal.valueOf(.45)
                         .compareTo(currencyConverterService.getConversionRate("USD", "INR"))
         );
+
+        Assertions.assertNull(currencyConverterService.getConversionRate("INR", "YEN"));
     }
 
     @Test(expected = ResponseStatusException.class)
