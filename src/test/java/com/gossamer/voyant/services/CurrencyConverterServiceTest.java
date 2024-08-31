@@ -55,6 +55,10 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void shouldDetermineConversionRateByRelationship() {
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(.5616)
+                        .compareTo(currencyConverterService.getConversionRate("CAD", "GDP"))
+        );
 
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(.9)
@@ -70,7 +74,26 @@ public class CurrencyConverterServiceTest {
                 BigDecimal.valueOf(.45)
                         .compareTo(currencyConverterService.getConversionRate("USD", "INR"))
         );
+        Assertions.assertNull(currencyConverterService.getConversionRate("INR", "YEN"));
+    }
 
+    @Test
+    public void shouldAddNewConversionRatesWhenDeterminingConversionRateRelationships() {
+
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(.9)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "MEX"))
+        );
+
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(1.8)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "CHF"))
+        );
+
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(.45)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "INR"))
+        );
         Assertions.assertNull(currencyConverterService.getConversionRate("INR", "YEN"));
     }
 
