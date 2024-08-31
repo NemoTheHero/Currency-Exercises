@@ -1,7 +1,7 @@
 package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+import com.gossamer.voyant.model.ConversionRateWithCountryNames;
 import com.gossamer.voyant.model.CurrencyData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
@@ -237,34 +237,34 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void shouldGetConversionRatesWithNames() {
-        List<ConversionRatesWithCountryName> conversionRatesWithCountryNames =
-                currencyConverterService.getAllConversionRatesWithCountryName();
-        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(0).getOriginCountry());
-        Assertions.assertEquals("GDP", conversionRatesWithCountryNames.get(0).getConversionCountry());
+        List<ConversionRateWithCountryNames> conversionRateWithCountryNames =
+                currencyConverterService.getAllConversionRatesWithCountryNames();
+        Assertions.assertEquals("USD", conversionRateWithCountryNames.get(0).getOriginCountry());
+        Assertions.assertEquals("GDP", conversionRateWithCountryNames.get(0).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.72)
-                        .compareTo(conversionRatesWithCountryNames.get(0).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(0).getConversionRate())
         );
 
-        Assertions.assertEquals("EUR", conversionRatesWithCountryNames.get(1).getOriginCountry());
-        Assertions.assertEquals("GDP", conversionRatesWithCountryNames.get(1).getConversionCountry());
+        Assertions.assertEquals("EUR", conversionRateWithCountryNames.get(1).getOriginCountry());
+        Assertions.assertEquals("GDP", conversionRateWithCountryNames.get(1).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.87)
-                        .compareTo(conversionRatesWithCountryNames.get(1).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(1).getConversionRate())
         );
 
-        Assertions.assertEquals("CAD", conversionRatesWithCountryNames.get(2).getOriginCountry());
-        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(2).getConversionCountry());
+        Assertions.assertEquals("CAD", conversionRateWithCountryNames.get(2).getOriginCountry());
+        Assertions.assertEquals("USD", conversionRateWithCountryNames.get(2).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.78)
-                        .compareTo(conversionRatesWithCountryNames.get(2).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(2).getConversionRate())
         );
 
-        Assertions.assertEquals("YEN", conversionRatesWithCountryNames.get(3).getOriginCountry());
-        Assertions.assertEquals("AUS", conversionRatesWithCountryNames.get(3).getConversionCountry());
+        Assertions.assertEquals("YEN", conversionRateWithCountryNames.get(3).getOriginCountry());
+        Assertions.assertEquals("AUS", conversionRateWithCountryNames.get(3).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.012)
-                        .compareTo(conversionRatesWithCountryNames.get(3).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(3).getConversionRate())
         );
     }
 
@@ -292,20 +292,20 @@ public class CurrencyConverterServiceTest {
 
     @Test
     public void addNewCurrencyDataShouldUpdateIfRateAlreadyExists() {
-        List<ConversionRatesWithCountryName> conversionRatesWithCountryNames =
-                currencyConverterService.getAllConversionRatesWithCountryName();
-        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(0).getOriginCountry());
-        Assertions.assertEquals("GDP", conversionRatesWithCountryNames.get(0).getConversionCountry());
+        List<ConversionRateWithCountryNames> conversionRateWithCountryNames =
+                currencyConverterService.getAllConversionRatesWithCountryNames();
+        Assertions.assertEquals("USD", conversionRateWithCountryNames.get(0).getOriginCountry());
+        Assertions.assertEquals("GDP", conversionRateWithCountryNames.get(0).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.72) //current conversion rate
-                        .compareTo(conversionRatesWithCountryNames.get(0).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(0).getConversionRate())
         );
 
-        Assertions.assertEquals("CAD", conversionRatesWithCountryNames.get(2).getOriginCountry());
-        Assertions.assertEquals("USD", conversionRatesWithCountryNames.get(2).getConversionCountry());
+        Assertions.assertEquals("CAD", conversionRateWithCountryNames.get(2).getOriginCountry());
+        Assertions.assertEquals("USD", conversionRateWithCountryNames.get(2).getConversionCountry());
         Assertions.assertEquals(0,
                 BigDecimal.valueOf(0.78) //current conversion rate
-                        .compareTo(conversionRatesWithCountryNames.get(2).getConversionRate())
+                        .compareTo(conversionRateWithCountryNames.get(2).getConversionRate())
         );
 
         List<List<String>> newCurrencyRates = Arrays.asList(
@@ -318,8 +318,8 @@ public class CurrencyConverterServiceTest {
                 .build();
         currencyConverterService.updateCurrencyData(currencyData);
 
-        List<ConversionRatesWithCountryName> updatedConversationRates =
-                currencyConverterService.getAllConversionRatesWithCountryName();
+        List<ConversionRateWithCountryNames> updatedConversationRates =
+                currencyConverterService.getAllConversionRatesWithCountryNames();
 
         Assertions.assertEquals("USD", updatedConversationRates.get(0).getOriginCountry());
         Assertions.assertEquals("GDP", updatedConversationRates.get(0).getConversionCountry());

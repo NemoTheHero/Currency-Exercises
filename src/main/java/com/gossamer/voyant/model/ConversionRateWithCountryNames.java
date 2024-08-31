@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @Builder
-public class ConversionRatesWithCountryName {
+public class ConversionRateWithCountryNames {
     private String originCountry;
 
     private String conversionCountry;

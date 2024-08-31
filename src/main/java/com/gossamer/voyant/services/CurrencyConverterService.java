@@ -2,7 +2,7 @@ package com.gossamer.voyant.services;
 
 import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+import com.gossamer.voyant.model.ConversionRateWithCountryNames;
 import com.gossamer.voyant.model.CurrencyData;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.collections4.map.MultiKeyMap;
@@ -27,18 +27,18 @@ public class CurrencyConverterService {
         this.countriesService = countriesService;
     }
 
-    public List<ConversionRatesWithCountryName> getAllConversionRatesWithCountryName() {
+    public List<ConversionRateWithCountryNames> getAllConversionRatesWithCountryNames() {
         Map<Long, String> countriesToMap = countriesService.countriesToMap();
         List<ConversionRates> allConversionRates = getAllConversionRates();
-        List<ConversionRatesWithCountryName> conversionRatesWithCountryNames = new ArrayList<>();
+        List<ConversionRateWithCountryNames> conversionRateWithCountryNames = new ArrayList<>();
 
-        allConversionRates.forEach(conversionRates -> conversionRatesWithCountryNames.add(
-                ConversionRatesWithCountryName.builder()
+        allConversionRates.forEach(conversionRates -> conversionRateWithCountryNames.add(
+                ConversionRateWithCountryNames.builder()
                         .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))
                         .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))
                         .conversionRate(conversionRates.getConversionRate())
                         .build()));
-        return conversionRatesWithCountryNames;
+        return conversionRateWithCountryNames;
     }
 
     public List<ConversionRates> getAllConversionRates() {

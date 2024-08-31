@@ -1,7 +1,7 @@
 package com.gossamer.voyant.controllers;
 
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+import com.gossamer.voyant.model.ConversionRateWithCountryNames;
 import com.gossamer.voyant.model.CurrencyData;
 import com.gossamer.voyant.services.CurrencyConverterService;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +27,9 @@ public class CurrencyConverterController {
     }
 
     @GetMapping("/getAllConversionRatesWithCountryName")
-    List<ConversionRatesWithCountryName> getAllConversionRatesWithCountryName() {
+    List<ConversionRateWithCountryNames> getAllConversionRatesWithCountryName() {
 
-        return currencyConverterService.getAllConversionRatesWithCountryName() ;
+        return currencyConverterService.getAllConversionRatesWithCountryNames() ;
     }
 
     @GetMapping("/getConversionRate")

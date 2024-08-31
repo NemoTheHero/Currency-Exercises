@@ -79,7 +79,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import com.gossamer.voyant.dao.ConversionRatesDao;
 &nbsp;import com.gossamer.voyant.entities.ConversionRates;
-&nbsp;import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+&nbsp;import com.gossamer.voyant.model.ConversionRateWithCountryNames;
 &nbsp;import com.gossamer.voyant.model.CurrencyData;
 &nbsp;import org.apache.commons.collections4.keyvalue.MultiKey;
 &nbsp;import org.apache.commons.collections4.map.MultiKeyMap;
@@ -107,15 +107,15 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public List&lt;ConversionRatesWithCountryName&gt; getAllConversionRatesWithCountryName() {
 <b class="fc">&nbsp;        Map&lt;Long, String&gt; countriesToMap = countriesService.countriesToMap();</b>
 <b class="fc">&nbsp;        List&lt;ConversionRates&gt; allConversionRates = getAllConversionRates();</b>
-<b class="fc">&nbsp;        List&lt;ConversionRatesWithCountryName&gt; conversionRatesWithCountryNames = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        List&lt;ConversionRatesWithCountryName&gt; conversionRateWithCountryNames = new ArrayList&lt;&gt;();</b>
 &nbsp;
-<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; conversionRatesWithCountryNames.add(</b>
+<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; conversionRateWithCountryNames.add(</b>
 <b class="fc">&nbsp;                ConversionRatesWithCountryName.builder()</b>
 <b class="fc">&nbsp;                        .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))</b>
 <b class="fc">&nbsp;                        .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))</b>
 <b class="fc">&nbsp;                        .conversionRate(conversionRates.getConversionRate())</b>
 <b class="fc">&nbsp;                        .build()));</b>
-<b class="fc">&nbsp;        return conversionRatesWithCountryNames;</b>
+<b class="fc">&nbsp;        return conversionRateWithCountryNames;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;ConversionRates&gt; getAllConversionRates() {

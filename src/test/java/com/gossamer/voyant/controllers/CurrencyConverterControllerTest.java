@@ -2,7 +2,7 @@ package com.gossamer.voyant.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gossamer.voyant.entities.ConversionRates;
-import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+import com.gossamer.voyant.model.ConversionRateWithCountryNames;
 import com.gossamer.voyant.model.CurrencyData;
 import com.gossamer.voyant.services.CurrencyConverterService;
 import org.junit.jupiter.api.Assertions;
@@ -55,10 +55,10 @@ public class CurrencyConverterControllerTest {
 
     @Test
     void getAllConversionRatesWithNameShouldCallGetAllConversionRatesWithName() throws Exception {
-        Mockito.when(currencyConverterService.getAllConversionRatesWithCountryName()).thenReturn(
-                Arrays.asList(ConversionRatesWithCountryName.builder().originCountry("USA")
+        Mockito.when(currencyConverterService.getAllConversionRatesWithCountryNames()).thenReturn(
+                Arrays.asList(ConversionRateWithCountryNames.builder().originCountry("USA")
                                 .conversionCountry("USD").conversionRate(BigDecimal.valueOf(.8)).build(),
-                        ConversionRatesWithCountryName.builder().originCountry("USA")
+                        ConversionRateWithCountryNames.builder().originCountry("USA")
                                 .conversionCountry("YEN").conversionRate(BigDecimal.valueOf(1.2)).build()));
         MvcResult result = this.mockMvc.perform(get("/currencyConvertor/getAllConversionRatesWithCountryName"))
                 .andDo(print()).andExpect(status().isOk()).andReturn();
@@ -68,7 +68,7 @@ public class CurrencyConverterControllerTest {
                 result.getResponse().getContentAsString());
 
         Mockito.verify(currencyConverterService, Mockito.times(1))
-                .getAllConversionRatesWithCountryName();
+                .getAllConversionRatesWithCountryNames();
 
     }
 
