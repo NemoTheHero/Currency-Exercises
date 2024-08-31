@@ -26,6 +26,9 @@ public class CurrencyConverterServiceTest {
     @Autowired
     CurrencyConverterService currencyConverterService;
 
+    @Autowired
+    CountriesService countriesService;
+
 
     @Test
     public void shouldHaveCurrenciesOnStartup() {
@@ -80,21 +83,21 @@ public class CurrencyConverterServiceTest {
     @Test
     public void shouldAddNewConversionRatesWhenDeterminingConversionRateRelationships() {
 
-        Assertions.assertEquals(0,
-                BigDecimal.valueOf(.9)
-                        .compareTo(currencyConverterService.getConversionRate("USD", "MEX"))
-        );
+        Assertions.assertEquals(8, currencyConverterService.getAllConversionRates().size());
+        Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
+        Assertions.assertEquals(1,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
 
-        Assertions.assertEquals(0,
-                BigDecimal.valueOf(1.8)
-                        .compareTo(currencyConverterService.getConversionRate("USD", "CHF"))
-        );
+        currencyConverterService.getConversionRate("USD", "MEX");
 
-        Assertions.assertEquals(0,
-                BigDecimal.valueOf(.45)
-                        .compareTo(currencyConverterService.getConversionRate("USD", "INR"))
-        );
-        Assertions.assertNull(currencyConverterService.getConversionRate("INR", "YEN"));
+
+        Assertions.assertEquals(11,
+                currencyConverterService.getAllConversionRates().size());
+        Assertions.assertEquals(3,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
+        Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
     }
 
     @Test(expected = ResponseStatusException.class)
@@ -298,21 +301,21 @@ public class CurrencyConverterServiceTest {
 
 
         Assertions.assertEquals(new ArrayList<>(),
-                currencyConverterService.currencyConnectionList(0L,1L, allConversionRates));
+                currencyConverterService.currencyConnectionList(0L, 1L, allConversionRates));
 
         Assertions.assertEquals(new ArrayList<>(),
-                currencyConverterService.currencyConnectionList(5L,8L, allConversionRates));
+                currencyConverterService.currencyConnectionList(5L, 8L, allConversionRates));
 
         Assertions.assertEquals(new ArrayList<>(),
-                currencyConverterService.currencyConnectionList(1L,6L, allConversionRates));
+                currencyConverterService.currencyConnectionList(1L, 6L, allConversionRates));
 
-        Assertions.assertEquals(Arrays.asList(1,2,3,4,7,8,9),
-                currencyConverterService.currencyConnectionList(1L,2L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1,2,3,4,7,8,9),
-                currencyConverterService.currencyConnectionList(2L,4L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1, 2, 3, 4, 7, 8, 9),
+                currencyConverterService.currencyConnectionList(1L, 2L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1, 2, 3, 4, 7, 8, 9),
+                currencyConverterService.currencyConnectionList(2L, 4L, allConversionRates));
 
-        Assertions.assertEquals(Arrays.asList(5,6),
-                currencyConverterService.currencyConnectionList(5L,6L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(5, 6),
+                currencyConverterService.currencyConnectionList(5L, 6L, allConversionRates));
 
 
     }
@@ -322,13 +325,13 @@ public class CurrencyConverterServiceTest {
 
 
         List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
-        Assertions.assertEquals(Arrays.asList(1L, 2L, 3L), currencyConverterService.shortestPathBetweenConversionRates(1L,3L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(4L, 1L, 2L, 7L), currencyConverterService.shortestPathBetweenConversionRates(4L,7L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(9L, 7L, 2L, 1L), currencyConverterService.shortestPathBetweenConversionRates(9L,1L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1L, 2L, 7L, 9L), currencyConverterService.shortestPathBetweenConversionRates(1L,9L, allConversionRates));
-        Assertions.assertEquals(Arrays.asList(1L, 4L), currencyConverterService.shortestPathBetweenConversionRates(1L,4L, allConversionRates));
-        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(2L,6L, allConversionRates));
-        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(0L,3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 2L, 3L), currencyConverterService.shortestPathBetweenConversionRates(1L, 3L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(4L, 1L, 2L, 7L), currencyConverterService.shortestPathBetweenConversionRates(4L, 7L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(9L, 7L, 2L, 1L), currencyConverterService.shortestPathBetweenConversionRates(9L, 1L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 2L, 7L, 9L), currencyConverterService.shortestPathBetweenConversionRates(1L, 9L, allConversionRates));
+        Assertions.assertEquals(Arrays.asList(1L, 4L), currencyConverterService.shortestPathBetweenConversionRates(1L, 4L, allConversionRates));
+        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(2L, 6L, allConversionRates));
+        Assertions.assertNull(currencyConverterService.shortestPathBetweenConversionRates(0L, 3L, allConversionRates));
     }
 
 }

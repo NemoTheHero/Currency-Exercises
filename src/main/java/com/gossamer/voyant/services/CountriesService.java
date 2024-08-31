@@ -43,4 +43,9 @@ public class CountriesService {
         return getAllCountries().stream()
                 .collect(Collectors.toMap(Country::getId, Country::getCountry));
     }
+
+    public Map<Long,String> countriesIdToMap () {
+        return getAllCountries().stream()
+                .collect(Collectors.toMap(Country::getId, Country::getCountry));
+    }
 }

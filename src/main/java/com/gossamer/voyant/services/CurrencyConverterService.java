@@ -4,6 +4,7 @@ import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,10 @@ public class CurrencyConverterService {
         return (List<ConversionRates>) conversionRatesDao.findAll();
     }
 
+    public List<ConversionRates> getConversionRatesForCountry(Long originCountryId) {
+        return conversionRatesDao.findByOriginCountryFid(originCountryId);
+    }
+
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
@@ -66,7 +71,6 @@ public class CurrencyConverterService {
 
         return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);
     }
-
 
     public void updateCurrencyData(CurrencyData currencyData) {
         Map<Long, String> countriesToMap = countriesService.countriesToMap();
@@ -117,7 +121,6 @@ public class CurrencyConverterService {
                         .conversionCountryFid(conversionCountryId)
                         .build());
             }
-
         });
     }
 
@@ -205,22 +208,18 @@ public class CurrencyConverterService {
         MultiKeyMap<Long, BigDecimal> newDeterminedConversionRates = convertConversionRateArrayToMap(allConversionRates);
         BigDecimal finalConversionRate = BigDecimal.ONE;
         int originIndex = 0;
-        int currentIndex = 0;
-        System.out.println(pathFromOriginToTarget.size());
-        System.out.println(conversionRateMap);
+
         //filter out rates with only ones that connected
         for(int i = 0; i < pathFromOriginToTarget.size() - 1 ; i++) {
             //check if adjacent path exists to node if not create one
 
             int nextNode = i + 1;
-            System.out.println("Current Check " + i + " " + nextNode);
-            System.out.println("Current Check " + pathFromOriginToTarget.get(i) + " " + pathFromOriginToTarget.get(nextNode));
+
             if(conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
-                System.out.println(pathFromOriginToTarget.get(i) + " " + pathFromOriginToTarget.get(nextNode) + " " +
-                        conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode)));
+
                 BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode));
                 finalConversionRate = finalConversionRate.multiply(conversionValue);
-
+                //todo make duplication into a function
                 //check if conversion exists from origin to this node if it doesnt determine it to be added
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))){
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
@@ -241,8 +240,7 @@ public class CurrencyConverterService {
                 }
 
             } else {
-                System.out.println(pathFromOriginToTarget.get(nextNode) + " " + pathFromOriginToTarget.get(i) + " " +
-                        conversionRateMap.get(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i)));
+
 
                 BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i));
                 finalConversionRate = finalConversionRate.multiply(reverseConversion(conversionValue));
@@ -268,8 +266,7 @@ public class CurrencyConverterService {
             }
 
         }
-        System.out.println(newDeterminedConversionRates);
-
+        addNewlyDeterminedRatesToDB(newDeterminedConversionRates);
         return finalConversionRate;
     }
 
@@ -277,11 +274,51 @@ public class CurrencyConverterService {
     MultiKeyMap<Long,BigDecimal> convertConversionRateArrayToMap(List<ConversionRates> conversionRatesList) {
         MultiKeyMap<Long,BigDecimal> multiKeyMap = new MultiKeyMap<>();
         for(ConversionRates conversionRate: conversionRatesList) {
-            multiKeyMap.put(conversionRate.getOriginCountryFid(), conversionRate.getConversionCountryFid().longValue(), conversionRate.getConversionRate());
+            multiKeyMap.put(conversionRate.getOriginCountryFid(), conversionRate.getConversionCountryFid(),
+                    conversionRate.getConversionRate());
         }
         return multiKeyMap;
 
     }
+
+    public void addNewlyDeterminedRatesToDB(MultiKeyMap<Long,BigDecimal> newlyDeterminedRatesMap) {
+        CurrencyData currencyData = new CurrencyData();
+        currencyData.setCurrencyData(new ArrayList<>());
+        for(Map.Entry<MultiKey<? extends Long>, BigDecimal> entry: newlyDeterminedRatesMap.entrySet()){
+            currencyData.getCurrencyData()
+                    .add(List.of(
+                            entry.getKey().getKey(0).toString(),
+                            entry.getKey().getKey(1).toString(),
+                            entry.getValue().toString()));
+        }
+        //todo make a function for this
+        currencyData.getCurrencyData().forEach(item -> {
+            Long originCountryId = Long.valueOf(item.get(0));
+            Long conversionCountryId = Long.valueOf(item.get(1));
+            BigDecimal conversionRate = BigDecimal.valueOf(Double.parseDouble(item.get(2)));
+
+            //if row already exists update it instead of adding a new one
+            List<ConversionRates> existingConversionRate =
+                    conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryId, conversionCountryId);
+
+            if (existingConversionRate.isEmpty()) {
+                conversionRatesDao.save(ConversionRates.builder()
+                        .originCountryFid(originCountryId)
+                        .conversionCountryFid(conversionCountryId)
+                        .conversionRate(conversionRate)
+                        .build());
+            } else {
+                conversionRatesDao.save(ConversionRates.builder()
+                        .id(existingConversionRate.get(0).getId())
+                        .conversionRate(conversionRate)
+                        .originCountryFid(originCountryId)
+                        .conversionCountryFid(conversionCountryId)
+                        .build());
+            }
+        });
+
+    }
+
 
 
 
