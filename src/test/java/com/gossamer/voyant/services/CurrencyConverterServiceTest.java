@@ -86,18 +86,75 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(8, currencyConverterService.getAllConversionRates().size());
         Assertions.assertEquals(2,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
+        Assertions.assertEquals(0,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("GDP")).size());
         Assertions.assertEquals(1,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
 
         currencyConverterService.getConversionRate("USD", "MEX");
 
 
-        Assertions.assertEquals(11,
+        Assertions.assertEquals(12,
                 currencyConverterService.getAllConversionRates().size());
         Assertions.assertEquals(3,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
         Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("GDP")).size());
+        Assertions.assertEquals(2,
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
+    }
+
+    @Test
+    public void shouldAddNewConversionRatesWhenDeterminingConversionRateRelationships2() {
+
+        Assertions.assertEquals(8, currencyConverterService.getAllConversionRates().size());
+        Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
+        Assertions.assertEquals(0,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("GDP")).size());
+        Assertions.assertEquals(1,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
+        Assertions.assertEquals(1,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("CHF")).size());
+
+        currencyConverterService.getConversionRate("CHF", "USD");
+
+
+        Assertions.assertEquals(14,
+                currencyConverterService.getAllConversionRates().size());
+        Assertions.assertEquals(3,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("USD")).size());
+        Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("GDP")).size());
+        Assertions.assertEquals(2,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("MEX")).size());
+        Assertions.assertEquals(3,
+                currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("CHF")).size());
+
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("USD")).isEmpty());
+    }
+    @Test
+    public void getConversionRateShouldCreateDirectConversionsToNodesAlongPath() {
+        Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("USD")).isEmpty());
+
+        Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("GDP")).isEmpty());
+
+        currencyConverterService.getConversionRate("CHF", "USD");
+
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("USD")).isEmpty());
+
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("GDP")).isEmpty());
+
     }
 
     @Test(expected = ResponseStatusException.class)

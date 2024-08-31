@@ -49,10 +49,14 @@ public class CurrencyConverterService {
         return conversionRatesDao.findByOriginCountryFid(originCountryId);
     }
 
+    public List<ConversionRates> getRateByOriginAndConversionCurrency(Long originCurrencyId, Long conversionCurrencyId) {
+        return conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCurrencyId, conversionCurrencyId);
+    }
+
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
-        List<ConversionRates> conversionRates = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryFid, conversionCountryFid);
+        List<ConversionRates> conversionRates = getRateByOriginAndConversionCurrency(originCountryFid, conversionCountryFid);
         if (conversionRates.isEmpty()) {
             //check for inverse
             List<ConversionRates> inverseConversion = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(conversionCountryFid, originCountryFid);
@@ -253,8 +257,8 @@ public class CurrencyConverterService {
                 //check if conversion exists from current node to origin if it doesnt determine it to be added
 
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
-                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
-                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
+                            pathFromOriginToTarget.get(originIndex), finalConversionRate);
                 }
 
                 // add to newDeterminedConversionRates
@@ -282,6 +286,7 @@ public class CurrencyConverterService {
     }
 
     public void addNewlyDeterminedRatesToDB(MultiKeyMap<Long,BigDecimal> newlyDeterminedRatesMap) {
+        System.out.println(newlyDeterminedRatesMap);
         CurrencyData currencyData = new CurrencyData();
         currencyData.setCurrencyData(new ArrayList<>());
         for(Map.Entry<MultiKey<? extends Long>, BigDecimal> entry: newlyDeterminedRatesMap.entrySet()){
