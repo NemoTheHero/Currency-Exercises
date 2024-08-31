@@ -132,7 +132,8 @@ public class CurrencyConverterServiceTest {
                 currencyConverterService.getConversionRatesForCountry(countriesService.getCountryId("CHF")).size());
     }
     @Test
-    public void getConversionRateShouldCreateDirectConversionsToNodesAlongPath() {
+    public void getConversionRateShouldCreateDirectConversionsToEachNodeAlongPath() {
+        // test is these directConversions exist
         Assertions.assertTrue(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("MEX"),
                 countriesService.getCountryId("CHF")).isEmpty());
@@ -149,28 +150,93 @@ public class CurrencyConverterServiceTest {
                 countriesService.getCountryId("CHF"),
                 countriesService.getCountryId("USD")).isEmpty());
 
+        //test edge from CHF To MEX and rate is .5
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("CHF"),
                 countriesService.getCountryId("MEX")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("MEX")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(.5)));
+
+        //test edge from MEX To GDP and rate is .8
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("MEX"),
                 countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("GDP")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(.8)));
+
+        //test edge from USD To GDP and rate is .72
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("USD"),
                 countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
+                countriesService.getCountryId("GDP")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(.72)));
 
 
         currencyConverterService.getConversionRate("CHF", "USD");
 
+        ////test edge from MEX To CHF is created
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("MEX"),
                 countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("MEX"),
+                countriesService.getCountryId("CHF")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(2)));
+
+        ////test edge from GDP To MEX is created
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("MEX")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("MEX")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(1.25)));
+
+        ////test edge from GDP To USD is created and is inverse rate is 2
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("USD")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("USD")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(1.38889)));
+
+        ////test bidirectional edge from GDP To CHF validate edges are inversed and correct
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("GDP"),
                 countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("GDP"),
+                countriesService.getCountryId("CHF")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(2.5)));
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("GDP")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("GDP")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(.4)));
+
+        ////test bidirectional edge from CHF To USD
+        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("USD")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("CHF"),
+                countriesService.getCountryId("USD")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(.55556)));
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("USD"),
                 countriesService.getCountryId("CHF")).isEmpty());
+        Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
+                countriesService.getCountryId("USD"),
+                countriesService.getCountryId("CHF")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(1.80000)));
+
+
+
+//        Assertions.assertEquals(BigDecimal.ONE, currencyConverterService.getRateByOriginAndConversionCurrency(
+//                countriesService.getCountryId("USD"),
+//                countriesService.getCountryId("CHF")).get(0).getConversionRate());
+
+
+
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("CHF"),
                 countriesService.getCountryId("GDP")).isEmpty());

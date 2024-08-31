@@ -236,10 +236,9 @@ public class CurrencyConverterService {
                             pathFromOriginToTarget.get(nextNode), finalConversionRate);
                 }
                 //check if conversion exists from current node to origin if it doesnt determine it to be added
-
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
-                            pathFromOriginToTarget.get(originIndex), finalConversionRate);
+                            pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));
                 }
 
                 //check if reverse exists, if not add it to newDeterminedConversionRates
@@ -264,7 +263,7 @@ public class CurrencyConverterService {
 
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
-                            pathFromOriginToTarget.get(originIndex), finalConversionRate);
+                            pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));
                 }
 
                 // add to newDeterminedConversionRates
