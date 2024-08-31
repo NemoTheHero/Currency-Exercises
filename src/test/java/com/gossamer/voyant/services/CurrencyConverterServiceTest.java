@@ -63,6 +63,16 @@ public class CurrencyConverterServiceTest {
                 BigDecimal.valueOf(.9)
                         .compareTo(currencyConverterService.getConversionRate("USD", "MEX"))
         );
+
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(1.8)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "CHF"))
+        );
+
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(.45)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "INR"))
+        );
     }
 
     @Test(expected = ResponseStatusException.class)

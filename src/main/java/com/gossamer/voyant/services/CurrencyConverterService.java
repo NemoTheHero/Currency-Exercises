@@ -259,7 +259,7 @@ public class CurrencyConverterService {
                             pathFromOriginToTarget.get(nextNode), finalConversionRate);
                 }
 
-                // add
+                // add to newDeterminedConversionRates
                 if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(i),
                             pathFromOriginToTarget.get(nextNode), reverseConversion(conversionValue));

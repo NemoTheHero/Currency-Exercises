@@ -23,6 +23,10 @@ insert into country (country)
 values ('AUS');
 insert into country (country)
 values ('MEX');
+insert into country (country)
+values ('CHF');
+insert into country (country)
+values ('INR');
 
 create table if not exists conversion_rates
 (
@@ -51,9 +55,12 @@ VALUES ((select ID from country where country = 'YEN'), (select ID from country 
 
 insert into conversion_rates (origin_country_fid, conversion_country_fid, conversion_rate)
 VALUES ((select ID from country where country = 'USD'), (select ID from country where country = 'CAD'), 0.50);
-
 insert into conversion_rates (origin_country_fid, conversion_country_fid, conversion_rate)
 VALUES ((select ID from country where country = 'MEX'), (select ID from country where country = 'GDP'), 0.8);
+insert into conversion_rates (origin_country_fid, conversion_country_fid, conversion_rate)
+VALUES ((select ID from country where country = 'CHF'), (select ID from country where country = 'MEX'), 0.5);
+insert into conversion_rates (origin_country_fid, conversion_country_fid, conversion_rate)
+VALUES ((select ID from country where country = 'INR'), (select ID from country where country = 'MEX'), 2);
 
 create table if not exists income_tax_brackets
 (
