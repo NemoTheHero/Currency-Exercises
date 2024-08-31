@@ -4,6 +4,7 @@ import com.gossamer.voyant.dao.ConversionRatesDao;
 import com.gossamer.voyant.entities.ConversionRates;
 import com.gossamer.voyant.model.ConversionRatesWithCountryName;
 import com.gossamer.voyant.model.CurrencyData;
+import org.apache.commons.collections4.map.MultiKeyMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -82,7 +83,11 @@ public class CurrencyConverterService {
                         String.format("Country not in system - %s", conversionCountry));
             }
             try {
-                Double.parseDouble(item.get(2));
+
+                if (Double.parseDouble(item.get(2)) <= 0) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            String.format("Conversion Rate cannot be 0 or Negative - %s", item.get(2)));
+                }
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         String.format("Problem with - %s to %s , %s", item.get(0), item.get(1), item.get(2)));
@@ -192,25 +197,94 @@ public class CurrencyConverterService {
     public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
 
         List<ConversionRates> allConversionRates = getAllConversionRates();
-        List<Integer> shortestPath = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
-        if (shortestPath == null) {
+        List<Long> pathFromOriginToTarget = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
+        if (pathFromOriginToTarget == null) {
             return null;
         }
-
+        MultiKeyMap<Long, BigDecimal> conversionRateMap = convertConversionRateArrayToMap(allConversionRates);
+        MultiKeyMap<Long, BigDecimal> newDeterminedConversionRates = convertConversionRateArrayToMap(allConversionRates);
+        BigDecimal finalConversionRate = BigDecimal.ONE;
+        int originIndex = 0;
+        int currentIndex = 0;
+        System.out.println(pathFromOriginToTarget.size());
+        System.out.println(conversionRateMap);
         //filter out rates with only ones that connected
-        for(int i = 0; i < shortestPath.size(); i++) {
+        for(int i = 0; i < pathFromOriginToTarget.size() - 1 ; i++) {
+            //check if adjacent path exists to node if not create one
+
+            int nextNode = i + 1;
+            System.out.println("Current Check " + i + " " + nextNode);
+            System.out.println("Current Check " + pathFromOriginToTarget.get(i) + " " + pathFromOriginToTarget.get(nextNode));
+            if(conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
+                System.out.println(pathFromOriginToTarget.get(i) + " " + pathFromOriginToTarget.get(nextNode) + " " +
+                        conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode)));
+                BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode));
+                finalConversionRate = finalConversionRate.multiply(conversionValue);
+
+                //check if conversion exists from origin to this node if it doesnt determine it to be added
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
+                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                }
+                //check if conversion exists from current node to origin if it doesnt determine it to be added
+
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
+                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                }
+
+                //check if reverse exists, if not add it to newDeterminedConversionRates
+
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
+                            pathFromOriginToTarget.get(i), reverseConversion(conversionValue));
+                }
+
+            } else {
+                System.out.println(pathFromOriginToTarget.get(nextNode) + " " + pathFromOriginToTarget.get(i) + " " +
+                        conversionRateMap.get(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i)));
+
+                BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i));
+                finalConversionRate = finalConversionRate.multiply(reverseConversion(conversionValue));
+
+                //check if conversion exists from origin to this node if it doesnt determine it to be added
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
+                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                }
+                //check if conversion exists from current node to origin if it doesnt determine it to be added
+
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
+                            pathFromOriginToTarget.get(nextNode), finalConversionRate);
+                }
+
+                // add
+                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
+                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(i),
+                            pathFromOriginToTarget.get(nextNode), reverseConversion(conversionValue));
+                }
+
+            }
 
         }
+        System.out.println(newDeterminedConversionRates);
 
-        return null;
+        return finalConversionRate;
     }
 
 
-    public static void addEdge(List<List<Integer>> adj,
-                               int u, int v) {
-        adj.get(u).add(v);
-        adj.get(v).add(u); // Undirected graph
+    MultiKeyMap<Long,BigDecimal> convertConversionRateArrayToMap(List<ConversionRates> conversionRatesList) {
+        MultiKeyMap<Long,BigDecimal> multiKeyMap = new MultiKeyMap<>();
+        for(ConversionRates conversionRate: conversionRatesList) {
+            multiKeyMap.put(conversionRate.getOriginCountryFid(), conversionRate.getConversionCountryFid().longValue(), conversionRate.getConversionRate());
+        }
+        return multiKeyMap;
+
     }
+
+
+
 
     static void bfs(List<List<Integer>> graph, int S,
                     List<Integer> par, List<Integer> dist) {
@@ -248,7 +322,7 @@ public class CurrencyConverterService {
         }
     }
 
-    public List<Integer> shortestPathBetweenConversionRates(Long originCurrencyId,
+    public List<Long> shortestPathBetweenConversionRates(Long originCurrencyId,
                                                             Long conversionCurrencyId,
                                                             List<ConversionRates> allConversionRates) {
 
@@ -289,7 +363,7 @@ public class CurrencyConverterService {
 
     }
 
-     private List<Integer> getShortestDistance(List<List<Integer>> graph, int S,
+     private List<Long> getShortestDistance(List<List<Integer>> graph, int S,
                                                int D, int V) {
         // par[] array stores the parent of nodes
         List<Integer> par
@@ -310,17 +384,20 @@ public class CurrencyConverterService {
         }
 
         // List path stores the shortest path
-        List<Integer> path = new ArrayList<>();
+        List<Long> path = new ArrayList<>();
         int currentNode = D;
-        path.add(D);
+        path.add((long) D);
         while (par.get(currentNode) != -1) {
-            path.add(par.get(currentNode));
+            path.add(Long.valueOf(par.get(currentNode)));
             currentNode = par.get(currentNode);
         }
 
         // Printing path from source to destination
-        for (int i = path.size() - 1; i >= 0; i--)
+        for (int i = path.size() - 1; i >= 0; i--) {
             System.out.print(path.get(i) + " ");
+        }
+         System.out.println(" ");
+
         return path.reversed();
     }
 

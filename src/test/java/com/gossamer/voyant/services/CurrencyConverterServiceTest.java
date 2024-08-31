@@ -53,6 +53,18 @@ public class CurrencyConverterServiceTest {
                         .compareTo(currencyConverterService.getConversionRate("GDP", "USD")));
     }
 
+    @Test
+    public void shouldDetermineConversionRateByRelationship() {
+
+//        Assertions.assertEquals(new BigDecimal(".9"),
+//                currencyConverterService.getConversionRate("USD", "MEX")
+//        );
+        Assertions.assertEquals(0,
+                BigDecimal.valueOf(.9)
+                        .compareTo(currencyConverterService.getConversionRate("USD", "MEX"))
+        );
+    }
+
     @Test(expected = ResponseStatusException.class)
     public void shouldThrowErrorIfCountryNotFound() {
         Assertions.assertNull(currencyConverterService.getConversionRate("USA", "YEN"));
@@ -274,7 +286,7 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
-    public void testGetConversionByRelationship() {
+    public void testShortestPathBetweenConversionRates() {
 
 
         List<ConversionRates> allConversionRates = currencyConverterService.getAllConversionRates();
