@@ -1,0 +1,94 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ConversionRatesDao</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.gossamer.voyant.dao</a>
+</div>
+
+<h1>Coverage Summary for Class: ConversionRatesDao (com.gossamer.voyant.dao)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ConversionRatesDao</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.gossamer.voyant.dao;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;import com.gossamer.voyant.entities.ConversionRates;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;// Annotation
+&nbsp;@Repository
+&nbsp;@Table(name = &quot;conversion_rates&quot;)
+&nbsp;// Interface extending CrudRepository
+&nbsp;public interface ConversionRatesDao
+&nbsp;        extends CrudRepository&lt;ConversionRates, Long&gt; {
+&nbsp;
+&nbsp;    List&lt;ConversionRates&gt; findByOriginCountryFidAndConversionCountryFid(Long originCountryFid, Long conversionCountryFid);
+&nbsp;
+&nbsp;    List&lt;ConversionRates&gt; findByOriginCountryFid(Long originCountryFid);
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-08-31 15:36</div>
+</div>
+</body>
+</html>

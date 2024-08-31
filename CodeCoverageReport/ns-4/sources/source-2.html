@@ -1,0 +1,553 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CurrencyConverterService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.gossamer.voyant.services</a>
+</div>
+
+<h1>Coverage Summary for Class: CurrencyConverterService (com.gossamer.voyant.services)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CurrencyConverterService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (25/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (229/229)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.gossamer.voyant.services;
+&nbsp;
+&nbsp;import com.gossamer.voyant.dao.ConversionRatesDao;
+&nbsp;import com.gossamer.voyant.entities.ConversionRates;
+&nbsp;import com.gossamer.voyant.model.ConversionRatesWithCountryName;
+&nbsp;import com.gossamer.voyant.model.CurrencyData;
+&nbsp;import org.apache.commons.collections4.keyvalue.MultiKey;
+&nbsp;import org.apache.commons.collections4.map.MultiKeyMap;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.math.RoundingMode;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class CurrencyConverterService {
+&nbsp;
+&nbsp;    private final ConversionRatesDao conversionRatesDao;
+&nbsp;
+&nbsp;    private final CountriesService countriesService;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public CurrencyConverterService(ConversionRatesDao conversionRatesDao, CountriesService countriesService) {</b>
+<b class="fc">&nbsp;        this.conversionRatesDao = conversionRatesDao;</b>
+<b class="fc">&nbsp;        this.countriesService = countriesService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;ConversionRatesWithCountryName&gt; getAllConversionRatesWithCountryName() {
+<b class="fc">&nbsp;        Map&lt;Long, String&gt; countriesToMap = countriesService.countriesToMap();</b>
+<b class="fc">&nbsp;        List&lt;ConversionRates&gt; allConversionRates = getAllConversionRates();</b>
+<b class="fc">&nbsp;        List&lt;ConversionRatesWithCountryName&gt; conversionRatesWithCountryNames = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; conversionRatesWithCountryNames.add(</b>
+<b class="fc">&nbsp;                ConversionRatesWithCountryName.builder()</b>
+<b class="fc">&nbsp;                        .originCountry(countriesToMap.get(conversionRates.getOriginCountryFid()))</b>
+<b class="fc">&nbsp;                        .conversionCountry(countriesToMap.get(conversionRates.getConversionCountryFid()))</b>
+<b class="fc">&nbsp;                        .conversionRate(conversionRates.getConversionRate())</b>
+<b class="fc">&nbsp;                        .build()));</b>
+<b class="fc">&nbsp;        return conversionRatesWithCountryNames;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;ConversionRates&gt; getAllConversionRates() {
+<b class="fc">&nbsp;        return (List&lt;ConversionRates&gt;) conversionRatesDao.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;ConversionRates&gt; getConversionRatesForCountry(Long originCountryId) {
+<b class="fc">&nbsp;        return conversionRatesDao.findByOriginCountryFid(originCountryId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;ConversionRates&gt; getRateByOriginAndConversionCurrency(Long originCurrencyId, Long conversionCurrencyId) {
+<b class="fc">&nbsp;        return conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCurrencyId, conversionCurrencyId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
+<b class="fc">&nbsp;        Long originCountryFid = countriesService.getCountryId(originCountry);</b>
+<b class="fc">&nbsp;        Long conversionCountryFid = countriesService.getCountryId(conversionCountry);</b>
+<b class="fc">&nbsp;        List&lt;ConversionRates&gt; conversionRates = getRateByOriginAndConversionCurrency(originCountryFid, conversionCountryFid);</b>
+<b class="fc">&nbsp;        if (conversionRates.isEmpty()) {</b>
+&nbsp;            //check for inverse
+<b class="fc">&nbsp;            List&lt;ConversionRates&gt; inverseConversion = conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(conversionCountryFid, originCountryFid);</b>
+<b class="fc">&nbsp;            if (inverseConversion.isEmpty()) {</b>
+<b class="fc">&nbsp;                return getConversionByRelationship(originCountryFid, conversionCountryFid);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return reverseConversion(inverseConversion.get(0).getConversionRate());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return conversionRates.get(0).getConversionRate();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BigDecimal reverseConversion(BigDecimal exchangeRate) {
+<b class="fc">&nbsp;        if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) &lt;= 0) {</b>
+<b class="fc">&nbsp;            return BigDecimal.ZERO;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return BigDecimal.valueOf(1.000).divide(exchangeRate, 5, RoundingMode.HALF_EVEN);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void updateCurrencyData(CurrencyData currencyData) {
+<b class="fc">&nbsp;        Map&lt;Long, String&gt; countriesToMap = countriesService.countriesToMap();</b>
+&nbsp;        //validate the new currency data
+<b class="fc">&nbsp;        currencyData.getCurrencyData().forEach(item -&gt; {</b>
+<b class="fc">&nbsp;            String originCountry = item.get(0);</b>
+<b class="fc">&nbsp;            if (!countriesToMap.containsValue(originCountry)) {</b>
+<b class="fc">&nbsp;                throw new ResponseStatusException(HttpStatus.NOT_FOUND,</b>
+<b class="fc">&nbsp;                        String.format(&quot;Country not in system - %s&quot;, originCountry));</b>
+&nbsp;            }
+<b class="fc">&nbsp;            String conversionCountry = item.get(1);</b>
+<b class="fc">&nbsp;            if (!countriesToMap.containsValue(conversionCountry)) {</b>
+<b class="fc">&nbsp;                throw new ResponseStatusException(HttpStatus.NOT_FOUND,</b>
+<b class="fc">&nbsp;                        String.format(&quot;Country not in system - %s&quot;, conversionCountry));</b>
+&nbsp;            }
+&nbsp;            try {
+&nbsp;
+<b class="fc">&nbsp;                if (Double.parseDouble(item.get(2)) &lt;= 0) {</b>
+<b class="fc">&nbsp;                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,</b>
+<b class="fc">&nbsp;                            String.format(&quot;Conversion Rate cannot be 0 or Negative - %s&quot;, item.get(2)));</b>
+&nbsp;                }
+<b class="fc">&nbsp;            } catch (ResponseStatusException e) {</b>
+<b class="fc">&nbsp;                throw e;</b>
+<b class="fc">&nbsp;            } catch (Exception e) {</b>
+<b class="fc">&nbsp;                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,</b>
+<b class="fc">&nbsp;                        String.format(&quot;Problem with - %s to %s , %s&quot;, item.get(0), item.get(1), item.get(2)));</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        });
+&nbsp;
+<b class="fc">&nbsp;        currencyData.getCurrencyData().forEach(item -&gt; {</b>
+<b class="fc">&nbsp;            Long originCountryId = countriesService.getCountryId(item.get(0));</b>
+<b class="fc">&nbsp;            Long conversionCountryId = countriesService.getCountryId(item.get(1));</b>
+<b class="fc">&nbsp;            BigDecimal conversionRate = BigDecimal.valueOf(Double.parseDouble(item.get(2)));</b>
+&nbsp;
+&nbsp;            //if row already exists update it instead of adding a new one
+<b class="fc">&nbsp;            List&lt;ConversionRates&gt; existingConversionRate =</b>
+<b class="fc">&nbsp;                    conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryId, conversionCountryId);</b>
+&nbsp;
+<b class="fc">&nbsp;            if (existingConversionRate.isEmpty()) {</b>
+<b class="fc">&nbsp;                conversionRatesDao.save(ConversionRates.builder()</b>
+<b class="fc">&nbsp;                        .originCountryFid(originCountryId)</b>
+<b class="fc">&nbsp;                        .conversionCountryFid(conversionCountryId)</b>
+<b class="fc">&nbsp;                        .conversionRate(conversionRate)</b>
+<b class="fc">&nbsp;                        .build());</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                conversionRatesDao.save(ConversionRates.builder()</b>
+<b class="fc">&nbsp;                        .id(existingConversionRate.get(0).getId())</b>
+<b class="fc">&nbsp;                        .conversionRate(conversionRate)</b>
+<b class="fc">&nbsp;                        .originCountryFid(originCountryId)</b>
+<b class="fc">&nbsp;                        .conversionCountryFid(conversionCountryId)</b>
+<b class="fc">&nbsp;                        .build());</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    public static int merge(int[] parent, int x) {
+<b class="fc">&nbsp;        if (parent[x] == x)</b>
+<b class="fc">&nbsp;            return x;</b>
+<b class="fc">&nbsp;        return merge(parent, parent[x]);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static List&lt;List&lt;Integer&gt;&gt; getConnectedConversionRates(int n, List&lt;List&lt;Integer&gt;&gt; edges) {
+<b class="fc">&nbsp;        int[] parent = new int[n];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="fc">&nbsp;            parent[i] = i;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for (List&lt;Integer&gt; x : edges) {</b>
+<b class="fc">&nbsp;            parent[merge(parent, x.get(0))] = merge(parent, x.get(1));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        int ans = 0;</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="fc">&nbsp;            if (parent[i] == i) ans++;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="fc">&nbsp;            parent[i] = merge(parent, parent[i]);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Map&lt;Integer, List&lt;Integer&gt;&gt; m = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; n; i++) {</b>
+<b class="fc">&nbsp;            m.computeIfAbsent(parent[i], k -&gt; new ArrayList&lt;&gt;()).add(i);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;List&lt;Integer&gt;&gt; connectedCurrenciesList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Map.Entry&lt;Integer, List&lt;Integer&gt;&gt; it : m.entrySet()) {</b>
+<b class="fc">&nbsp;            List&lt;Integer&gt; l = it.getValue();</b>
+<b class="fc">&nbsp;            connectedCurrenciesList.add(l);</b>
+<b class="fc">&nbsp;            for (int x : l) {</b>
+<b class="fc">&nbsp;                System.out.print(x + &quot; &quot;);</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;            System.out.println();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return connectedCurrenciesList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //Get all rates that are in a Set together using the Union-Find Algorithm
+&nbsp;    List&lt;List&lt;Integer&gt;&gt; getConnectedConversionRates(List&lt;ConversionRates&gt; allConversionRates) {
+<b class="fc">&nbsp;        List&lt;Long&gt; uniqueCurrenciesList = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        List&lt;List&lt;Integer&gt;&gt; edges = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; {</b>
+<b class="fc">&nbsp;            if (!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {</b>
+<b class="fc">&nbsp;                uniqueCurrenciesList.add(conversionRates.getOriginCountryFid());</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {</b>
+<b class="fc">&nbsp;                uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());</b>
+&nbsp;            }
+<b class="fc">&nbsp;            edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(),</b>
+<b class="fc">&nbsp;                    conversionRates.getConversionCountryFid().intValue()));</b>
+&nbsp;        });
+&nbsp;
+<b class="fc">&nbsp;        int n = uniqueCurrenciesList.size() + 1;</b>
+<b class="fc">&nbsp;        return getConnectedConversionRates(n, edges);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    List&lt;Integer&gt; currencyConnectionList(Long originCurrency, Long conversionCurrency, List&lt;ConversionRates&gt; allConversionRates) {
+<b class="fc">&nbsp;        List&lt;List&lt;Integer&gt;&gt; connectedConversionRates = getConnectedConversionRates(allConversionRates);</b>
+<b class="fc">&nbsp;        for (List&lt;Integer&gt; connectedRates : connectedConversionRates) {</b>
+<b class="fc">&nbsp;            if (connectedRates.contains(originCurrency.intValue()) &amp;&amp; connectedRates.contains(conversionCurrency.intValue())) {</b>
+<b class="fc">&nbsp;                return connectedRates;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public BigDecimal getConversionByRelationship(Long originCountryFid, Long conversionCountryFid) {
+&nbsp;
+<b class="fc">&nbsp;        List&lt;ConversionRates&gt; allConversionRates = getAllConversionRates();</b>
+<b class="fc">&nbsp;        List&lt;Long&gt; pathFromOriginToTarget = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        if (pathFromOriginToTarget == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        for (Long path : pathFromOriginToTarget) {</b>
+<b class="fc">&nbsp;            System.out.print(path + &quot; &quot;);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        MultiKeyMap&lt;Long, BigDecimal&gt; conversionRateMap = convertConversionRateArrayToMap(allConversionRates);</b>
+<b class="fc">&nbsp;        MultiKeyMap&lt;Long, BigDecimal&gt; newDeterminedConversionRates = convertConversionRateArrayToMap(allConversionRates);</b>
+<b class="fc">&nbsp;        BigDecimal finalConversionRate = BigDecimal.ONE;</b>
+<b class="fc">&nbsp;        int originIndex = 0;</b>
+&nbsp;
+&nbsp;        //filter out rates with only ones that connected
+<b class="fc">&nbsp;        for (int i = 0; i &lt; pathFromOriginToTarget.size() - 1; i++) {</b>
+&nbsp;            //check if adjacent path exists to node if not create one
+&nbsp;
+<b class="fc">&nbsp;            int nextNode = i + 1;</b>
+&nbsp;
+<b class="fc">&nbsp;            if (conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))) {</b>
+&nbsp;
+<b class="fc">&nbsp;                BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode));</b>
+<b class="fc">&nbsp;                finalConversionRate = finalConversionRate.multiply(conversionValue);</b>
+&nbsp;                //todo make duplication into a function
+&nbsp;                //check if conversion exists from origin to this node if it doesnt determine it to be added
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(nextNode), finalConversionRate);</b>
+&nbsp;                }
+&nbsp;                //check if conversion exists from current node to origin if it doesnt determine it to be added
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                //check if reverse exists, if not add it to newDeterminedConversionRates
+&nbsp;
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(i), reverseConversion(conversionValue));</b>
+&nbsp;                }
+&nbsp;
+<b class="fc">&nbsp;            } else {</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i));</b>
+<b class="fc">&nbsp;                finalConversionRate = finalConversionRate.multiply(reverseConversion(conversionValue));</b>
+&nbsp;
+&nbsp;                //check if conversion exists from origin to this node if it doesnt determine it to be added
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(nextNode), finalConversionRate);</b>
+&nbsp;                }
+&nbsp;                //check if conversion exists from current node to origin if it doesnt determine it to be added
+&nbsp;
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                // add to newDeterminedConversionRates
+<b class="fc">&nbsp;                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))) {</b>
+<b class="fc">&nbsp;                    newDeterminedConversionRates.put(pathFromOriginToTarget.get(i),</b>
+<b class="fc">&nbsp;                            pathFromOriginToTarget.get(nextNode), reverseConversion(conversionValue));</b>
+&nbsp;                }
+&nbsp;
+&nbsp;            }
+&nbsp;
+&nbsp;        }
+<b class="fc">&nbsp;        addNewlyDeterminedRatesToDB(newDeterminedConversionRates);</b>
+<b class="fc">&nbsp;        return finalConversionRate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    MultiKeyMap&lt;Long, BigDecimal&gt; convertConversionRateArrayToMap(List&lt;ConversionRates&gt; conversionRatesList) {
+<b class="fc">&nbsp;        MultiKeyMap&lt;Long, BigDecimal&gt; multiKeyMap = new MultiKeyMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (ConversionRates conversionRate : conversionRatesList) {</b>
+<b class="fc">&nbsp;            multiKeyMap.put(conversionRate.getOriginCountryFid(), conversionRate.getConversionCountryFid(),</b>
+<b class="fc">&nbsp;                    conversionRate.getConversionRate());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return multiKeyMap;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addNewlyDeterminedRatesToDB(MultiKeyMap&lt;Long, BigDecimal&gt; newlyDeterminedRatesMap) {
+<b class="fc">&nbsp;        CurrencyData currencyData = new CurrencyData();</b>
+<b class="fc">&nbsp;        currencyData.setCurrencyData(new ArrayList&lt;&gt;());</b>
+<b class="fc">&nbsp;        for (Map.Entry&lt;MultiKey&lt;? extends Long&gt;, BigDecimal&gt; entry : newlyDeterminedRatesMap.entrySet()) {</b>
+<b class="fc">&nbsp;            currencyData.getCurrencyData()</b>
+<b class="fc">&nbsp;                    .add(List.of(</b>
+<b class="fc">&nbsp;                            entry.getKey().getKey(0).toString(),</b>
+<b class="fc">&nbsp;                            entry.getKey().getKey(1).toString(),</b>
+<b class="fc">&nbsp;                            entry.getValue().toString()));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        //todo make a function for this
+<b class="fc">&nbsp;        currencyData.getCurrencyData().forEach(item -&gt; {</b>
+<b class="fc">&nbsp;            Long originCountryId = Long.valueOf(item.get(0));</b>
+<b class="fc">&nbsp;            Long conversionCountryId = Long.valueOf(item.get(1));</b>
+<b class="fc">&nbsp;            BigDecimal conversionRate = BigDecimal.valueOf(Double.parseDouble(item.get(2)));</b>
+&nbsp;
+&nbsp;            //if row already exists update it instead of adding a new one
+<b class="fc">&nbsp;            List&lt;ConversionRates&gt; existingConversionRate =</b>
+<b class="fc">&nbsp;                    conversionRatesDao.findByOriginCountryFidAndConversionCountryFid(originCountryId, conversionCountryId);</b>
+&nbsp;
+<b class="fc">&nbsp;            if (existingConversionRate.isEmpty()) {</b>
+<b class="fc">&nbsp;                conversionRatesDao.save(ConversionRates.builder()</b>
+<b class="fc">&nbsp;                        .originCountryFid(originCountryId)</b>
+<b class="fc">&nbsp;                        .conversionCountryFid(conversionCountryId)</b>
+<b class="fc">&nbsp;                        .conversionRate(conversionRate)</b>
+<b class="fc">&nbsp;                        .build());</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                conversionRatesDao.save(ConversionRates.builder()</b>
+<b class="fc">&nbsp;                        .id(existingConversionRate.get(0).getId())</b>
+<b class="fc">&nbsp;                        .conversionRate(conversionRate)</b>
+<b class="fc">&nbsp;                        .originCountryFid(originCountryId)</b>
+<b class="fc">&nbsp;                        .conversionCountryFid(conversionCountryId)</b>
+<b class="fc">&nbsp;                        .build());</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    static void bfs(List&lt;List&lt;Integer&gt;&gt; graph, int S,
+&nbsp;                    List&lt;Integer&gt; par, List&lt;Integer&gt; dist) {
+&nbsp;        // Queue to store the nodes in the order they are
+&nbsp;        // visited
+<b class="fc">&nbsp;        Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();</b>
+&nbsp;        // Mark the distance of the source node as 0
+<b class="fc">&nbsp;        dist.set(S, 0);</b>
+&nbsp;        // Push the source node to the queue
+<b class="fc">&nbsp;        q.add(S);</b>
+&nbsp;
+&nbsp;        // Iterate until the queue is not empty
+<b class="fc">&nbsp;        while (!q.isEmpty()) {</b>
+&nbsp;            // Pop the node at the front of the queue
+<b class="fc">&nbsp;            int node = q.poll();</b>
+&nbsp;
+&nbsp;            // Explore all the neighbors of the current node
+<b class="fc">&nbsp;            for (int neighbor : graph.get(node)) {</b>
+&nbsp;                // Check if the neighboring node is not
+&nbsp;                // visited
+<b class="fc">&nbsp;                if (dist.get(neighbor)</b>
+&nbsp;                        == Integer.MAX_VALUE) {
+&nbsp;                    // Mark the current node as the parent
+&nbsp;                    // of the neighboring node
+<b class="fc">&nbsp;                    par.set(neighbor, node);</b>
+&nbsp;                    // Mark the distance of the neighboring
+&nbsp;                    // node as the distance of the current
+&nbsp;                    // node + 1
+<b class="fc">&nbsp;                    dist.set(neighbor, dist.get(node) + 1);</b>
+&nbsp;                    // Insert the neighboring node to the
+&nbsp;                    // queue
+<b class="fc">&nbsp;                    q.add(neighbor);</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Long&gt; shortestPathBetweenConversionRates(Long originCurrencyId,
+&nbsp;                                                         Long conversionCurrencyId,
+&nbsp;                                                         List&lt;ConversionRates&gt; allConversionRates) {
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        List&lt;List&lt;Integer&gt;&gt; edges = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        List&lt;Long&gt; uniqueCurrenciesList = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; {</b>
+<b class="fc">&nbsp;            if (!uniqueCurrenciesList.contains(conversionRates.getOriginCountryFid())) {</b>
+<b class="fc">&nbsp;                uniqueCurrenciesList.add(conversionRates.getOriginCountryFid());</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (!uniqueCurrenciesList.contains(conversionRates.getConversionCountryFid())) {</b>
+<b class="fc">&nbsp;                uniqueCurrenciesList.add(conversionRates.getConversionCountryFid());</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+&nbsp;        // Number of vertices in the graph
+<b class="fc">&nbsp;        int V = uniqueCurrenciesList.size() + 1;</b>
+&nbsp;
+&nbsp;
+&nbsp;        // Add edges to the graph
+<b class="fc">&nbsp;        allConversionRates.forEach(conversionRates -&gt; edges.add(Arrays.asList(conversionRates.getOriginCountryFid().intValue(),</b>
+<b class="fc">&nbsp;                conversionRates.getConversionCountryFid().intValue())));</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        List&lt;List&lt;Integer&gt;&gt; graph = new ArrayList&lt;&gt;(V);</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; V; i++) {</b>
+<b class="fc">&nbsp;            graph.add(new ArrayList&lt;&gt;());</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for (List&lt;Integer&gt; edge : edges) {</b>
+<b class="fc">&nbsp;            graph.get(edge.get(0)).add(edge.get(1));</b>
+<b class="fc">&nbsp;            graph.get(edge.get(1)).add(edge.get(0));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return getShortestDistance(graph, originCurrencyId.intValue(), conversionCurrencyId.intValue(), V);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;Long&gt; getShortestDistance(List&lt;List&lt;Integer&gt;&gt; graph, int S,
+&nbsp;                                           int D, int V) {
+&nbsp;        // par[] array stores the parent of nodes
+<b class="fc">&nbsp;        List&lt;Integer&gt; par</b>
+<b class="fc">&nbsp;                = new ArrayList&lt;&gt;(Collections.nCopies(V, -1));</b>
+&nbsp;
+&nbsp;        // dist[] array stores the distance of nodes from S
+<b class="fc">&nbsp;        List&lt;Integer&gt; dist = new ArrayList&lt;&gt;(</b>
+<b class="fc">&nbsp;                Collections.nCopies(V, Integer.MAX_VALUE));</b>
+&nbsp;
+&nbsp;        // Function call to find the distance of all nodes
+&nbsp;        // and their parent nodes
+<b class="fc">&nbsp;        bfs(graph, S, par, dist);</b>
+&nbsp;
+<b class="fc">&nbsp;        if (dist.get(D) == Integer.MAX_VALUE) {</b>
+<b class="fc">&nbsp;            System.out.println(</b>
+&nbsp;                    &quot;Source and Destination are not connected&quot;);
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // List path stores the shortest path
+<b class="fc">&nbsp;        List&lt;Long&gt; path = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        int currentNode = D;</b>
+<b class="fc">&nbsp;        path.add((long) D);</b>
+<b class="fc">&nbsp;        while (par.get(currentNode) != -1) {</b>
+<b class="fc">&nbsp;            path.add(Long.valueOf(par.get(currentNode)));</b>
+<b class="fc">&nbsp;            currentNode = par.get(currentNode);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Printing path from source to destination
+<b class="fc">&nbsp;        for (int i = path.size() - 1; i &gt;= 0; i--) {</b>
+<b class="fc">&nbsp;            System.out.print(path.get(i) + &quot; &quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        System.out.println(&quot; &quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        return path.reversed();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-08-31 15:36</div>
+</div>
+</body>
+</html>

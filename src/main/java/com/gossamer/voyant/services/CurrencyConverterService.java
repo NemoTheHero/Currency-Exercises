@@ -96,6 +96,8 @@ public class CurrencyConverterService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             String.format("Conversion Rate cannot be 0 or Negative - %s", item.get(2)));
                 }
+            } catch (ResponseStatusException e) {
+                throw e;
             } catch (Exception e) {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         String.format("Problem with - %s to %s , %s", item.get(0), item.get(1), item.get(2)));
@@ -207,11 +209,10 @@ public class CurrencyConverterService {
         List<Long> pathFromOriginToTarget = shortestPathBetweenConversionRates(originCountryFid, conversionCountryFid, allConversionRates);
 
 
-
         if (pathFromOriginToTarget == null) {
             return null;
         }
-        for(Long path: pathFromOriginToTarget) {
+        for (Long path : pathFromOriginToTarget) {
             System.out.print(path + " ");
         }
         MultiKeyMap<Long, BigDecimal> conversionRateMap = convertConversionRateArrayToMap(allConversionRates);
@@ -220,30 +221,30 @@ public class CurrencyConverterService {
         int originIndex = 0;
 
         //filter out rates with only ones that connected
-        for(int i = 0; i < pathFromOriginToTarget.size() - 1 ; i++) {
+        for (int i = 0; i < pathFromOriginToTarget.size() - 1; i++) {
             //check if adjacent path exists to node if not create one
 
             int nextNode = i + 1;
 
-            if(conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
+            if (conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))) {
 
                 BigDecimal conversionValue = conversionRateMap.get(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode));
                 finalConversionRate = finalConversionRate.multiply(conversionValue);
                 //todo make duplication into a function
                 //check if conversion exists from origin to this node if it doesnt determine it to be added
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
                             pathFromOriginToTarget.get(nextNode), finalConversionRate);
                 }
                 //check if conversion exists from current node to origin if it doesnt determine it to be added
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
                             pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));
                 }
 
                 //check if reverse exists, if not add it to newDeterminedConversionRates
 
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(i))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
                             pathFromOriginToTarget.get(i), reverseConversion(conversionValue));
                 }
@@ -255,19 +256,19 @@ public class CurrencyConverterService {
                 finalConversionRate = finalConversionRate.multiply(reverseConversion(conversionValue));
 
                 //check if conversion exists from origin to this node if it doesnt determine it to be added
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(originIndex), pathFromOriginToTarget.get(nextNode))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(originIndex),
                             pathFromOriginToTarget.get(nextNode), finalConversionRate);
                 }
                 //check if conversion exists from current node to origin if it doesnt determine it to be added
 
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(nextNode), pathFromOriginToTarget.get(originIndex))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(nextNode),
                             pathFromOriginToTarget.get(originIndex), reverseConversion(finalConversionRate));
                 }
 
                 // add to newDeterminedConversionRates
-                if(!conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))){
+                if (!conversionRateMap.containsKey(pathFromOriginToTarget.get(i), pathFromOriginToTarget.get(nextNode))) {
                     newDeterminedConversionRates.put(pathFromOriginToTarget.get(i),
                             pathFromOriginToTarget.get(nextNode), reverseConversion(conversionValue));
                 }
@@ -280,9 +281,9 @@ public class CurrencyConverterService {
     }
 
 
-    MultiKeyMap<Long,BigDecimal> convertConversionRateArrayToMap(List<ConversionRates> conversionRatesList) {
-        MultiKeyMap<Long,BigDecimal> multiKeyMap = new MultiKeyMap<>();
-        for(ConversionRates conversionRate: conversionRatesList) {
+    MultiKeyMap<Long, BigDecimal> convertConversionRateArrayToMap(List<ConversionRates> conversionRatesList) {
+        MultiKeyMap<Long, BigDecimal> multiKeyMap = new MultiKeyMap<>();
+        for (ConversionRates conversionRate : conversionRatesList) {
             multiKeyMap.put(conversionRate.getOriginCountryFid(), conversionRate.getConversionCountryFid(),
                     conversionRate.getConversionRate());
         }
@@ -290,11 +291,10 @@ public class CurrencyConverterService {
 
     }
 
-    public void addNewlyDeterminedRatesToDB(MultiKeyMap<Long,BigDecimal> newlyDeterminedRatesMap) {
-        System.out.println(newlyDeterminedRatesMap);
+    public void addNewlyDeterminedRatesToDB(MultiKeyMap<Long, BigDecimal> newlyDeterminedRatesMap) {
         CurrencyData currencyData = new CurrencyData();
         currencyData.setCurrencyData(new ArrayList<>());
-        for(Map.Entry<MultiKey<? extends Long>, BigDecimal> entry: newlyDeterminedRatesMap.entrySet()){
+        for (Map.Entry<MultiKey<? extends Long>, BigDecimal> entry : newlyDeterminedRatesMap.entrySet()) {
             currencyData.getCurrencyData()
                     .add(List.of(
                             entry.getKey().getKey(0).toString(),
@@ -328,9 +328,6 @@ public class CurrencyConverterService {
         });
 
     }
-
-
-
 
 
     static void bfs(List<List<Integer>> graph, int S,
@@ -370,8 +367,8 @@ public class CurrencyConverterService {
     }
 
     public List<Long> shortestPathBetweenConversionRates(Long originCurrencyId,
-                                                            Long conversionCurrencyId,
-                                                            List<ConversionRates> allConversionRates) {
+                                                         Long conversionCurrencyId,
+                                                         List<ConversionRates> allConversionRates) {
 
 
         List<List<Integer>> edges = new ArrayList<>();
@@ -410,8 +407,8 @@ public class CurrencyConverterService {
 
     }
 
-     private List<Long> getShortestDistance(List<List<Integer>> graph, int S,
-                                               int D, int V) {
+    private List<Long> getShortestDistance(List<List<Integer>> graph, int S,
+                                           int D, int V) {
         // par[] array stores the parent of nodes
         List<Integer> par
                 = new ArrayList<>(Collections.nCopies(V, -1));
@@ -443,7 +440,7 @@ public class CurrencyConverterService {
         for (int i = path.size() - 1; i >= 0; i--) {
             System.out.print(path.get(i) + " ");
         }
-         System.out.println(" ");
+        System.out.println(" ");
 
         return path.reversed();
     }

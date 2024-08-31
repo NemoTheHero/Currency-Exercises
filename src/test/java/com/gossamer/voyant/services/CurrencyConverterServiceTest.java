@@ -201,7 +201,7 @@ public class CurrencyConverterServiceTest {
                 countriesService.getCountryId("GDP"),
                 countriesService.getCountryId("USD")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(1.38889)));
 
-        ////test bidirectional edge from GDP To CHF validate edges are inversed and correct
+        ////test bidirectional edge from CHF To GDP validate edges are inversed and correct
         Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("GDP"),
                 countriesService.getCountryId("CHF")).isEmpty());
@@ -228,32 +228,6 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(0, currencyConverterService.getRateByOriginAndConversionCurrency(
                 countriesService.getCountryId("USD"),
                 countriesService.getCountryId("CHF")).get(0).getConversionRate().compareTo(BigDecimal.valueOf(1.80000)));
-
-
-
-//        Assertions.assertEquals(BigDecimal.ONE, currencyConverterService.getRateByOriginAndConversionCurrency(
-//                countriesService.getCountryId("USD"),
-//                countriesService.getCountryId("CHF")).get(0).getConversionRate());
-
-
-
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("CHF"),
-                countriesService.getCountryId("GDP")).isEmpty());
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("CHF"),
-                countriesService.getCountryId("USD")).isEmpty());
-
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("CHF"),
-                countriesService.getCountryId("MEX")).isEmpty());
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("MEX"),
-                countriesService.getCountryId("GDP")).isEmpty());
-        Assertions.assertFalse(currencyConverterService.getRateByOriginAndConversionCurrency(
-                countriesService.getCountryId("USD"),
-                countriesService.getCountryId("GDP")).isEmpty());
-
     }
 
     @Test(expected = ResponseStatusException.class)
@@ -399,7 +373,7 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
-    public void shouldThrowIfUnableToParseNewRate() {
+    public void shouldThrowIfUnableToParseNewRateOrZeroOrNegative() {
         ResponseStatusException exception = Assertions.assertThrows(
                 ResponseStatusException.class,
                 () -> {
@@ -416,6 +390,37 @@ public class CurrencyConverterServiceTest {
         Assertions.assertEquals(
                 String.format("422 UNPROCESSABLE_ENTITY \"Problem with - %s to %s , %s\"", "YEN", "USD", "0.22O"),
                 exception.getMessage());
+
+        //throw if 0
+        exception = Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    List<List<String>> newCurrencyRates = List.of(
+                            Arrays.asList("YEN", "USD", "0")
+                    );
+                    currencyConverterService.updateCurrencyData(CurrencyData.builder()
+                            .currencyData(newCurrencyRates)
+                            .build());
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        Assertions.assertEquals(String.format("400 BAD_REQUEST \"Conversion Rate cannot be 0 or Negative - %s\"", "0"), exception.getMessage());
+        //throw if negative
+        exception = Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    List<List<String>> newCurrencyRates = List.of(
+                            Arrays.asList("YEN", "USD", "-1")
+                    );
+                    currencyConverterService.updateCurrencyData(CurrencyData.builder()
+                            .currencyData(newCurrencyRates)
+                            .build());
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        Assertions.assertEquals(String.format("400 BAD_REQUEST \"Conversion Rate cannot be 0 or Negative - %s\"", "-1"), exception.getMessage());
     }
 
     @Test

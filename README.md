@@ -2,6 +2,8 @@ This project uses JAVA 21 and runs with Spring Boot.
 
 Make sure to run "mvn clean install" on the project to get all dependencies.
 
+Code Coverage report can be found in the /CodeCoverageReport folder
+
 On run the project will create a H2 Database using a file
 on your computer. It should be located at
 For Windows
