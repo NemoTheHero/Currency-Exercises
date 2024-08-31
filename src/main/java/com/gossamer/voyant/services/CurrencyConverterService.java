@@ -54,8 +54,12 @@ public class CurrencyConverterService {
     }
 
     public BigDecimal getConversionRate(String originCountry, String conversionCountry) {
+
         Long originCountryFid = countriesService.getCountryId(originCountry);
         Long conversionCountryFid = countriesService.getCountryId(conversionCountry);
+        if(Objects.equals(originCountryFid, conversionCountryFid)) {
+            return BigDecimal.ONE;
+        }
         List<ConversionRates> conversionRates = getRateByOriginAndConversionCurrency(originCountryFid, conversionCountryFid);
         if (conversionRates.isEmpty()) {
             //check for inverse

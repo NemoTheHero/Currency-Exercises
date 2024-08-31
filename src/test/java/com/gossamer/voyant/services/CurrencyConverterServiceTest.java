@@ -45,6 +45,14 @@ public class CurrencyConverterServiceTest {
     }
 
     @Test
+    public void conversionRateShouldReturn1IfCountriesAreTheSame() {
+        Assertions.assertEquals(0,
+                BigDecimal.ONE
+                        .compareTo(currencyConverterService.getConversionRate("USD", "USD"))
+        );
+    }
+
+    @Test
     public void shouldReturnNullIfNoConversionRateFound() {
         Assertions.assertNull(currencyConverterService.getConversionRate("USD", "YEN"));
     }
