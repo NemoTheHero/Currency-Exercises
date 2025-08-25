@@ -49,3 +49,8 @@ create table if not exists user_user_score
     FOREIGN KEY (user2Id) references users (ID)
 )
 
+insert into users (ID, username) values (1, "Nemo")
+insert into users (ID, username) values (2, "Bailey")
+insert into users (ID, username) values (3, "Michael")
+insert into users (ID, username) values (4, "Karim")
+insert into users (ID, username) values (5, "Sam")
