@@ -1,6 +1,8 @@
 drop table if exists user_keywords;
 drop table if exists user_user_score;
 drop table if exists associations;
+drop table if exists keywords;
+
 drop table if exists users;
 
 create table if not exists keywords
@@ -31,22 +33,22 @@ create table if not exists users
 create table if not exists user_keywords
 (
     ID        int not null AUTO_INCREMENT,
-    userId    int not null,
-    keywordId int not null,
+    user_Id    int not null,
+    keyword_Id int not null,
     PRIMARY KEY (ID),
-    FOREIGN KEY (userId) references users (ID),
-    FOREIGN KEY (keywordId) references keywords (ID)
+    FOREIGN KEY (user_Id) references users (ID),
+    FOREIGN KEY (keyword_Id) references keywords (ID)
 );
 
 create table if not exists user_user_score
 (
     ID               int            not null AUTO_INCREMENT,
-    user1Id         int            not null,
-    user2Id         int            not null,
+    user1_Id         int            not null,
+    user2_Id         int            not null,
     score           int,
     PRIMARY KEY (ID),
-    FOREIGN KEY (user1Id) references users (ID),
-    FOREIGN KEY (user2Id) references users (ID)
+    FOREIGN KEY (user1_Id) references users (ID),
+    FOREIGN KEY (user2_Id) references users (ID)
 );
 
 insert into users (ID, username) values (1, 'Nemo');
@@ -54,3 +56,5 @@ insert into users (ID, username) values (2, 'Bailey');
 insert into users (ID, username) values (3, 'Michael');
 insert into users (ID, username) values (4, 'Karim');
 insert into users (ID, username) values (5, 'Sam');
+insert into keywords (ID, keyword) values (1, 'Board Game');
+insert into user_keywords (user_Id, keyword_Id) values ( 1,1 );
