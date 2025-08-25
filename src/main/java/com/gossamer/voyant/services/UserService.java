@@ -6,6 +6,7 @@ import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,13 @@ public class UserService {
 
     public List<UserKeywords> findUserKeywordsByKeyword(Long userKeywordsId) {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
+    }
+    public List<User> findAllUsersByKeyword(Long userKeywordsId) {
+        List<UserKeywords> findUserKeywordsByKeyword = userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
+        List<User> users = new ArrayList<>();
+        for (UserKeywords userKeywords : findUserKeywordsByKeyword) {
+            userDao.findById(userKeywords.getUserId()).ifPresent(users::add);
+        }
+        return users;
     }
 }
