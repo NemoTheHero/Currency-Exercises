@@ -21,12 +21,21 @@ create table if not exists associations
     FOREIGN KEY (keyword2Id) references keywords (ID)
 );
 
+create table if not exists users
+(
+    ID       int          not null AUTO_INCREMENT,
+    username varchar(100) not null,
+    PRIMARY KEY (ID)
+);
+
 create table if not exists user_user_score
 (
     ID               int            not null AUTO_INCREMENT,
     user1Id         int            not null,
     user2Id         int            not null,
-    acore           int
-    PRIMARY KEY (ID)
+    score           int,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (user1Id) references users (ID),
+    FOREIGN KEY (user2Id) references users (ID)
 )
 
