@@ -28,6 +28,16 @@ create table if not exists users
     PRIMARY KEY (ID)
 );
 
+create table if not exists user_keywords
+(
+    ID        int not null AUTO_INCREMENT,
+    userId    int not null,
+    keywordId int not null,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (userId) references users (ID),
+    FOREIGN KEY (keywordId) references keywords (ID)
+);
+
 create table if not exists user_user_score
 (
     ID               int            not null AUTO_INCREMENT,
