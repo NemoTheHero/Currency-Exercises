@@ -56,6 +56,6 @@ insert into users (ID, username) values (2, 'Bailey');
 insert into users (ID, username) values (3, 'Michael');
 insert into users (ID, username) values (4, 'Karim');
 insert into users (ID, username) values (5, 'Sam');
-insert into keywords (ID, keyword) values (1, 'Board Game');
+insert into keywords (ID, keyword) values (1, 'Board Games');
 insert into user_keywords (user_Id, keyword_Id) values ( 1,1 );
 insert into user_keywords (user_Id, keyword_Id) values ( 5,1 );

@@ -14,4 +14,6 @@ public interface UserKeywordsDao
         extends CrudRepository<UserKeywords, Long> {
     List<UserKeywords> findUserKeywordsByKeywordId(Long keywordId);
 
+    List<UserKeywords> findUserKeywordsByUserId(Long userId);
+
 }
