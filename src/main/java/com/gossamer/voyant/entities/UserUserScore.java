@@ -17,12 +17,13 @@ public class UserUserScore {
 
 
     @Id
-    Long userId;
+    Long id;
 
-    @Column
+
+    @Column(name = "user1_id")
     Long user1Id;
 
-    @Column
+    @Column(name = "user2_id")
     Long user2Id;
 
     @Column
