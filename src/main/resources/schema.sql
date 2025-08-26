@@ -35,6 +35,7 @@ create table if not exists user_keywords
     ID        int not null AUTO_INCREMENT,
     user_Id    int not null,
     keyword_Id int not null,
+    score int not null,
     PRIMARY KEY (ID),
     FOREIGN KEY (user_Id) references users (ID),
     FOREIGN KEY (keyword_Id) references keywords (ID)
