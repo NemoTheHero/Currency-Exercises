@@ -173,95 +173,105 @@ async function clickDone() {
 </template>
 
 <style scoped>
-#suggestion-box {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+/* Layout & Text */
+.center-screen {
+display: flex;
+justify-content: center;
+align-items: center;
+margin: 1rem 0;
 }
 
 #user-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 20px;
+font-size: 1.75rem;
+font-weight: 600;
+margin-top: 1rem;
+text-align: center;
 }
 
-.loading-box {
-  min-height: 195px;
-  text-align: center;
-}
-
-#selections-box {
-  display: flex;
-  flex-wrap: wrap-reverse;
-  justify-content: center;
-  align-content: flex-start;
-  gap: 10px;
-  max-width: 600px;
-  min-height: 200px;
-  margin: 20px auto;
+/* Input & Add */
+#hobby-input-wrapper {
+gap: 0.5rem;
 }
 
 #hobby-input {
-  width: 300px;
-  margin-right: 6px;
-}
-
-.center-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.parent-suggestion-box {
-  text-align: center;
-}
-
-.parent-suggestion {
-  border-radius: 6px;
-  background-color: #313131;
-  color: white;
-  padding: 4px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.child-suggestion {
-  border-radius: 6px;
-  background-color: #656565;
-  color: white;
-  padding: 4px;
-  text-align: center;
-  margin: 5px;
-  cursor: pointer;
-}
-
-.selection {
-  border-radius: 20px;
-  background-color: #313131;
-  color: white;
-  padding: 6px 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-input {
-  border-radius: 20px;
-  padding: 6px;
-  border: 1px solid gray
+width: 300px;
+padding: 8px 12px;
+border-radius: 20px;
+border: 1px solid #ccc;
+font-size: 1rem;
 }
 
 button {
-  border: 0;
-  padding: 6px 10px;
-  border-radius: 20px;
-  background: #3232b8;
-  color: white;
-  cursor: pointer;
+background-color: #3b82f6;
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 20px;
+cursor: pointer;
+transition: background-color 0.2s;
 }
 
+button:hover {
+background-color: #2563eb;
+}
+
+/* Selections */
+#selections-box {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+max-width: 700px;
+margin-bottom: 1rem;
+}
+
+.selection {
+background-color: #e0f2fe;
+color: #0369a1;
+padding: 6px 12px;
+border-radius: 9999px;
+font-size: 0.95rem;
+user-select: none;
+}
+
+/* Suggestion Bubbles */
+#suggestion-box {
+display: flex;
+flex-wrap: wrap;
+gap: 0.75rem;
+padding: 1.5rem;
+justify-content: center;
+align-items: flex-start;
+}
+
+/* Both parent and child look like bubbles */
+.parent-suggestion,
+.child-suggestion {
+background-color: #f3f4f6;
+padding: 10px 14px;
+border-radius: 9999px;
+font-size: 0.95rem;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+user-select: none;
+}
+
+.parent-suggestion:hover,
+.child-suggestion:hover {
+background-color: #dbeafe;
+}
+
+/* Selected bubbles */
 .selected {
-  background-color: lightgray;
+background-color: #3b82f6 !important;
+color: white !important;
+pointer-events: none;
+}
+
+/* Loading */
+.loading-box {
+font-style: italic;
+font-size: 1rem;
+color: #555;
+margin-top: 1rem;
 }
 </style>
