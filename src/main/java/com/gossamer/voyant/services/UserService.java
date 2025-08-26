@@ -86,17 +86,29 @@ public class UserService {
     public void addInterests(Long userId, List<KeywordDTO> keywords) {
         List<UserKeywords> userKeywordsList = new ArrayList<>();
         List<UserKeywords> existingUserKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
-        Set<Long> existingUserKeywordIds = existingUserKeywords.stream().map(UserKeywords::getKeywordId).collect(Collectors.toSet());
 
         for ( KeywordDTO keywordDTO : keywords) {
             Optional<Keyword> keywordOpt = keywordsDao.findByKeyword(keywordDTO.getKeyword());
-            if (keywordOpt.isPresent() && !existingUserKeywordIds.contains(keywordOpt.get().getId())) {
-                UserKeywords userKeywords = UserKeywords.builder()
-                        .userId(userId)
-                        .keywordId(keywordOpt.get().getId())
-                        .score((long)keywordDTO.getScore())
-                        .build();
-                userKeywordsList.add(userKeywords);
+
+            if (keywordOpt.isPresent()) {
+                UserKeywords existingItem = existingUserKeywords.stream()
+                        .filter(uk -> uk.getKeywordId().equals(keywordOpt.get().getId()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (existingItem != null) {
+                    if (existingItem.getScore() < keywordDTO.getScore()) {
+                        existingItem.setScore((long)keywordDTO.getScore());
+                        userKeywordsList.add(existingItem);
+                    }
+                } else {
+                    UserKeywords userKeywords = UserKeywords.builder()
+                            .userId(userId)
+                            .keywordId(keywordOpt.get().getId())
+                            .score((long)keywordDTO.getScore())
+                            .build();
+                    userKeywordsList.add(userKeywords);
+                }
             }
         }
         userKeywordsDao.saveAll(userKeywordsList);
