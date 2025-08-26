@@ -23,6 +23,17 @@ const selections = ref<string[]>([]);
 const loadingSuggestions = ref(false);
 const lastAddedHobby = ref("");
 
+const userName = ref("");
+
+fetch(`http://localhost:8080/user/findById?userId=${props.userId}`)
+    .then(response => response.json())
+    .then(data => {
+      userName.value = data.userName;
+    })
+    .catch(error => {
+      console.error("Error fetching user data:", error);
+    });
+
 function clickAdd() {
   if (!hobbyInput.value || hobbyInput.value.trim() === "") {
     return;
@@ -135,6 +146,7 @@ async function clickDone() {
 </script>
 
 <template>
+  <div id="user-name" class="center-screen">{{userName}}</div>
   <div class="center-screen">
   <div id="selections-box">
     <span class="selection" v-for="selection in selections">{{selection}}</span>
@@ -167,6 +179,12 @@ async function clickDone() {
   gap: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+#user-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 20px;
 }
 
 .loading-box {
