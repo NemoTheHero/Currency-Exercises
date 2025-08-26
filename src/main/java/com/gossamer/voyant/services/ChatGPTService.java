@@ -48,7 +48,7 @@ public class ChatGPTService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return extractAssistantMessage(response.body());
+            return extractAssistantMessage(response.body()).replaceAll("```json\n","").replaceAll("```","");
         } else {
             throw new IOException("OpenAI API error: " + response.statusCode() + "\n" + response.body());
         }
