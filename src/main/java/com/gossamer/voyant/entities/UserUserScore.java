@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserUserScore {
     @Id
-    int userId;
+    Long userId;
 
     @Column
-    int user1Id;
+    Long user1Id;
 
     @Column
-    int user2Id;
+    Long user2Id;
 
     @Column
-    int score;
+    Long score;
 }
