@@ -13,9 +13,7 @@ import java.util.Optional;
 @Table(name = "user_user_score")
 public interface UserUserScoreDao
         extends CrudRepository<UserUserScore, Long> {
-//
-//    Optional<UserUserScore> findUserUserScoreByUserIdOrUser1Id(Long userId) {
-//        return null;
-//    }
+
+    Optional<UserUserScore> findUserUserScoreByUser1IdOrUser2Id(Long lowerUserId, Long higherUserId);
 
 }

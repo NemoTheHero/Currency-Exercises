@@ -24,4 +24,7 @@ public class UserKeywords {
     @Column
     Long keywordId;
 
+    @Column
+    Long score;
+
 }
