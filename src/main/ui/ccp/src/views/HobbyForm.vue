@@ -67,16 +67,22 @@ function addHobby(hobby) {
   // update values in db
 }
 
+class KeywordDTO {
+  constructor(keyword, score) {
+    this.keyword = keyword.replaceAll(" ", "_");
+    this.score = score;
+  }
+}
+
 async function submitHobbies() {
-  const hobbyObject = {};
+  const keywordArray = [];
   if (lastAddedHobby.value) {
-    hobbyObject[lastAddedHobby.value.replaceAll(" ", "_")] = MAX_HOBBY_VALUE;
+    keywordArray.push(new KeywordDTO(lastAddedHobby.value, MAX_HOBBY_VALUE));
   }
 
   correlatedHobbies.value.forEach((parent) => {
-    if (parent.selected) {
-      hobbyObject[parent.name.replaceAll(" ", "_")] = parent.selected ? MAX_HOBBY_VALUE : MID_HOBBY_VALUE;
-    }
+      keywordArray.push(new KeywordDTO(parent.name, parent.selected ? MAX_HOBBY_VALUE : MID_HOBBY_VALUE));
+
     parent.correlated_hobbies.forEach((child) => {
       let childValue = MIN_HOBBY_VALUE;
       if (parent.selected) {
@@ -86,31 +92,26 @@ async function submitHobbies() {
         childValue = MAX_HOBBY_VALUE;
       }
 
-        hobbyObject[child.name.replaceAll(" ", "_")] = childValue;
+      keywordArray.push(new KeywordDTO(child.name, childValue));
     });
   });
 
-  console.log(hobbyObject)
-  // fetch("http://localhost:8080/user/hobbies", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(hobbyObject),
-  // })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       console.log("Hobbies submitted successfully:", data);
-  //       // Optionally, clear the selections and correlated hobbies
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error submitting hobbies:", error);
-  //     });
+  console.log(keywordArray)
+  await fetch(`http://localhost:8080/user/addInterests?userId=${props.userId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(keywordArray),
+  })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error submitting hobbies:", error);
+      });
 }
 
 function clickChild(e, hobby, parentIndex, childIndex) {
