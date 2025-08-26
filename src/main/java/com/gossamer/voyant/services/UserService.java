@@ -3,26 +3,32 @@ package com.gossamer.voyant.services;
 import com.gossamer.voyant.dao.KeywordsDao;
 import com.gossamer.voyant.dao.UserDao;
 import com.gossamer.voyant.dao.UserKeywordsDao;
+import com.gossamer.voyant.dao.UserUserScoreDao;
 import com.gossamer.voyant.entities.Keywords;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
+import com.gossamer.voyant.entities.UserUserScore;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static org.apache.commons.lang3.math.NumberUtils.min;
 
 @Service
 public class UserService {
 
     private final UserDao userDao;
+    private final UserUserScoreDao userUserScoreDao;
     private final UserKeywordsDao userKeywordsDao;
     private final KeywordsDao keywordsDao;
+    private final RankingService rankingService;
 
-    public UserService(UserDao userDao, UserKeywordsDao userKeywordsDao, KeywordsDao keywordsDao) {
+    public UserService(UserDao userDao, UserKeywordsDao userKeywordsDao, KeywordsDao keywordsDao, UserUserScoreDao userUserScoreDao, RankingService rankingService) {
         this.userDao = userDao;
         this.userKeywordsDao = userKeywordsDao;
         this.keywordsDao = keywordsDao;
+        this.userUserScoreDao = userUserScoreDao;
+        this.rankingService = rankingService;
     }
     public Optional<User> getUser(Long userId) {
 
@@ -49,4 +55,10 @@ public class UserService {
         }
         return users;
     }
+
+    private void updateRankingsForUser(User user) {
+        List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(user.getId());
+        rankingService.updateAllRankingsForUser(user, userKeywords);
+    }
+
 }

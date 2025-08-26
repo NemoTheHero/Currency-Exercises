@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class UserUserScore {
+
+
     @Id
     Long userId;
 
