@@ -108,7 +108,7 @@ async function submitHobbies() {
   });
 
   console.log(keywordArray)
-  await fetch(`http://localhost:8080/user/addInterests?userId=${props.userId}`, {
+  return fetch(`http://localhost:8080/user/addInterests?userId=${props.userId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -154,7 +154,7 @@ async function clickDone() {
   </div>
 <div id="hobby-input-wrapper" class="center-screen">
   <input v-model="hobbyInput" id="hobby-input" name="hobby" type="text" @keydown.enter="clickAdd" />
-  <button @click="clickAdd">Add</button>
+  <button @click="clickAdd" :disabled="loadingSuggestions">Add</button>
 </div>
   <div v-if="!loadingSuggestions" id="suggestion-box">
   <div class="parent-suggestion-box" v-for="(hobbyParent, i) in correlatedHobbies" :key="hobbyParent.name">
@@ -168,7 +168,7 @@ async function clickDone() {
     Loading suggestions...
   </div>
   <div v-if="selections.length" class="center-screen">
-    <button @click="clickDone">Done</button>
+    <button @click="clickDone" :disabled="loadingSuggestions">Done</button>
   </div>
 </template>
 
@@ -297,5 +297,10 @@ animation: spin 0.8s linear infinite;
 @keyframes spin {
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
+}
+
+button:disabled {
+background-color: #bbcff4;
+  cursor: default;
 }
 </style>
