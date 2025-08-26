@@ -14,7 +14,7 @@ public class UserRecommendationsService {
     }
 
     String promptString =
-            "In json format, give me the top 4 hobbies that correlate to %s, for each result give me the top 4 hobbies for each result. each result should have an object called correlated_hobbies. only return the json in this format\n" +
+            "In json format, give me the top 4 hobbies or things that correlate to %s, for each result give me the top 4 hobbies for each result. each result should have an object called correlated_hobbies. only return the json in this format\n" +
                     "{\n" +
                     "    \"%s\": {\n" +
                     "        \"correlated_hobbies\": [\n" +
