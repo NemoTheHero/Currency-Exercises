@@ -112,6 +112,8 @@ public class UserService {
             }
         }
         userKeywordsDao.saveAll(userKeywordsList);
+        User user = userDao.findById(userId).orElse(null);
+        updateRankingsForUser(user);
     }
 
 }

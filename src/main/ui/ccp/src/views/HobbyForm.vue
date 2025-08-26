@@ -69,7 +69,7 @@ function addHobby(hobby) {
 
 class KeywordDTO {
   constructor(keyword, score) {
-    this.keyword = keyword.replaceAll(" ", "_");
+    this.keyword = keyword.replaceAll("_", " ");
     this.score = score;
   }
 }

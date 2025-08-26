@@ -19,10 +19,10 @@ public class RankingService {
 
     UserUserScoreDao userUserScoreDao;
     UserKeywordsDao userKeywordsDao;
-    UserService userService;
 
-    public RankingService(UserUserScoreDao userUserScoreDao) {
+    public RankingService(UserUserScoreDao userUserScoreDao, UserKeywordsDao userKeywordsDao) {
         this.userUserScoreDao = userUserScoreDao;
+        this.userKeywordsDao = userKeywordsDao;
     }
 
     public Optional<UserUserScore> getUserUserScoreForUsers(User user1, User user2) {
