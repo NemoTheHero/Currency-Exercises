@@ -23,7 +23,7 @@ public class RankingService {
     }
 
     public Optional<UserUserScore> getUserUserScoreForUsers(User user1, User user2) {
-        return userUserScoreDao.findUserUserScoreByUser1IdOrUser2Id(user1.getId(),user2.getId());
+        return userUserScoreDao.findUserUserScoreByUser1IdAndUser2Id(user1.getId(),user2.getId());
     }
 
 
@@ -56,7 +56,7 @@ public class RankingService {
                 userId2 = user.getId();
             }
 
-            Optional<UserUserScore> existing = userUserScoreDao.findUserUserScoreByUser1IdOrUser2Id(userId1,userId2);
+            Optional<UserUserScore> existing = userUserScoreDao.findUserUserScoreByUser1IdAndUser2Id(userId1,userId2);
 
             if (existing.isPresent()) {
                 existing.get().setScore(sharedInterestValue);

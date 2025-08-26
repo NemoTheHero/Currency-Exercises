@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface UserUserScoreDao
         extends CrudRepository<UserUserScore, Long> {
 
-    Optional<UserUserScore> findUserUserScoreByUser1IdOrUser2Id(Long lowerUserId, Long higherUserId);
+    Optional<UserUserScore> findUserUserScoreByUser1IdAndUser2Id(Long lowerUserId, Long higherUserId);
 
     List<UserUserScore> findUserUserScoreByUser1IdOrUser2IdOrderByScoreDesc(Long userId1, Long userId2);
 
