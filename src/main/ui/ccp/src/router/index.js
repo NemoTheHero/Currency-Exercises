@@ -7,7 +7,10 @@ const router = createRouter({
   routes: [
     {
       path: '/hobby-form',
-      name: 'hobbyForm',
+      name: 'HobbyForm',
+      props: (route) => ({
+        userId: Number(route.query.userId),
+      }),
       component: HobbyForm,
     },
     {
