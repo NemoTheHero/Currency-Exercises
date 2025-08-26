@@ -5,30 +5,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity(name = "user_user_score")
+@Entity
+@Table(name = "keywords")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
-public class UserUserScore {
-
-
+public class Keyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-
-    @Column(name = "user1_id")
-    Long user1Id;
-
-    @Column(name = "user2_id")
-    Long user2Id;
-
+    private Long id;
     @Column
-    Long score;
+    private String keyword;
+
 }

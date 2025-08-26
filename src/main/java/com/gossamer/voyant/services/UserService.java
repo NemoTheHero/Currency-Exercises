@@ -4,16 +4,16 @@ import com.gossamer.voyant.dao.KeywordsDao;
 import com.gossamer.voyant.dao.UserDao;
 import com.gossamer.voyant.dao.UserKeywordsDao;
 import com.gossamer.voyant.dao.UserUserScoreDao;
-import com.gossamer.voyant.entities.Keywords;
+import com.gossamer.voyant.entities.Keyword;
+import com.gossamer.voyant.entities.KeywordDTO;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import com.gossamer.voyant.entities.UserUserScore;
+import java.util.stream.Collectors;
 import com.gossamer.voyant.model.UserScore;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static org.apache.commons.lang3.math.NumberUtils.min;
 
 @Service
 public class UserService {
@@ -36,9 +36,9 @@ public class UserService {
         return userDao.findById(userId);
     }
 
-    public List<Keywords> getInterests(Long userId) {
+    public List<Keyword> getInterests(Long userId) {
         List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
-        List<Keywords> interests = new ArrayList<>();
+        List<Keyword> interests = new ArrayList<>();
         for (UserKeywords userKeyword : userKeywords) {
             keywordsDao.findById(userKeyword.getKeywordId()).ifPresent(interests::add);
         }
@@ -78,6 +78,26 @@ public class UserService {
     private void updateRankingsForUser(User user) {
         List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(user.getId());
         rankingService.updateAllRankingsForUser(user, userKeywords);
+    }
+
+
+    public void addInterests(Long userId, List<KeywordDTO> keywords) {
+        List<UserKeywords> userKeywordsList = new ArrayList<>();
+        List<UserKeywords> existingUserKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
+        Set<Long> existingUserKeywordIds = existingUserKeywords.stream().map(UserKeywords::getKeywordId).collect(Collectors.toSet());
+
+        for ( KeywordDTO keywordDTO : keywords) {
+            Optional<Keyword> keywordOpt = keywordsDao.findByKeyword(keywordDTO.getKeyword());
+            if (keywordOpt.isPresent() && !existingUserKeywordIds.contains(keywordOpt.get().getId())) {
+                UserKeywords userKeywords = UserKeywords.builder()
+                        .userId(userId)
+                        .keywordId(keywordOpt.get().getId())
+                        .score((long)keywordDTO.getScore())
+                        .build();
+                userKeywordsList.add(userKeywords);
+            }
+        }
+        userKeywordsDao.saveAll(userKeywordsList);
     }
 
 }

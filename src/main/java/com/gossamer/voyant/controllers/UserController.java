@@ -1,8 +1,10 @@
 package com.gossamer.voyant.controllers;
 
-import com.gossamer.voyant.entities.Keywords;
+import com.gossamer.voyant.entities.Keyword;
+import com.gossamer.voyant.entities.KeywordDTO;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
+import com.gossamer.voyant.services.KeywordService;
 import com.gossamer.voyant.model.UserScore;
 import com.gossamer.voyant.services.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +16,10 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final KeywordService keywordService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, KeywordService keywordService) {
+        this.keywordService = keywordService;
         this.userService = userService;
     }
 
@@ -25,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/interests")
-    List<Keywords> getUserInterests(@RequestParam Long userId) {
+    List<Keyword> getUserInterests(@RequestParam Long userId) {
         return userService.getInterests(userId) ;
     }
 
@@ -43,4 +47,12 @@ public class UserController {
     List<UserScore> getMatches(@RequestParam Long userId) {
         return userService.getMatchesForUserScoreDesc(userId) ;
     }
+
+    @PostMapping("/addInterests")
+    void addInterests(@RequestParam Long userId, @RequestBody List<KeywordDTO> keywords) {
+        List<String> keywordNames = keywords.stream().map(KeywordDTO::getKeyword).toList();
+        keywordService.addNewKeywords(keywordNames);
+        userService.addInterests(userId, keywords);
+    }
+
 }
