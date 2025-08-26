@@ -13,6 +13,7 @@ import java.util.List;
 public interface UserKeywordsDao
         extends CrudRepository<UserKeywords, Long> {
     List<UserKeywords> findUserKeywordsByKeywordId(Long keywordId);
+    List<UserKeywords> findUserKeywordsByKeywordIdAndUserIdIsNot(Long keywordId,Long userId);
 
     List<UserKeywords> findUserKeywordsByUserId(Long userId);
 
