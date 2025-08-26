@@ -50,7 +50,8 @@ public class UserController {
 
     @PostMapping("/addInterests")
     void addInterests(@RequestParam Long userId, @RequestBody List<KeywordDTO> keywords) {
-        List<String> keywordNames = keywords.stream().map(KeywordDTO::getKeyword).toList();
+        List<String> keywordNames = keywords.stream().map(keywordDTO -> keywordDTO.getKeyword().toLowerCase())
+                .toList();
         keywordService.addNewKeywords(keywordNames);
         userService.addInterests(userId, keywords);
     }
