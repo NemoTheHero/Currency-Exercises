@@ -1,7 +1,9 @@
 package com.gossamer.voyant.services;
 
+import com.gossamer.voyant.dao.KeywordsDao;
 import com.gossamer.voyant.dao.UserDao;
 import com.gossamer.voyant.dao.UserKeywordsDao;
+import com.gossamer.voyant.entities.Keywords;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,25 @@ public class UserService {
 
     private final UserDao userDao;
     private final UserKeywordsDao userKeywordsDao;
+    private final KeywordsDao keywordsDao;
 
-    public UserService(UserDao userDao, UserKeywordsDao userKeywordsDao) {
+    public UserService(UserDao userDao, UserKeywordsDao userKeywordsDao, KeywordsDao keywordsDao) {
         this.userDao = userDao;
         this.userKeywordsDao = userKeywordsDao;
+        this.keywordsDao = keywordsDao;
     }
     public Optional<User> getUser(Long userId) {
 
         return userDao.findById(userId);
+    }
+
+    public List<Keywords> getInterests(Long userId) {
+        List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
+        List<Keywords> interests = new ArrayList<>();
+        for (UserKeywords userKeyword : userKeywords) {
+            keywordsDao.findById(userKeyword.getKeywordId()).ifPresent(interests::add);
+        }
+        return interests;
     }
 
     public List<UserKeywords> findUserKeywordsByKeyword(Long userKeywordsId) {
