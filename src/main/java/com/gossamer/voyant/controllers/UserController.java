@@ -38,8 +38,8 @@ public class UserController {
         return userService.findUserKeywordsByKeyword(keywordId) ;
     }
 
-    @GetMapping("/getAllUsersByKeywordId")
-    List<User> getAllUsersByKeywords(@RequestParam Long keywordId) {
+    @GetMapping("/getAllUsersScoresByKeywordId")
+    List<UserScore> getAllUsersByKeywords(@RequestParam Long keywordId) {
         return userService.findAllUsersByKeyword(keywordId) ;
     }
 

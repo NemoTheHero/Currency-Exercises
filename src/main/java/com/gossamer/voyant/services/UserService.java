@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+
 @Service
 public class UserService {
 
@@ -48,11 +49,12 @@ public class UserService {
     public List<UserKeywords> findUserKeywordsByKeyword(Long userKeywordsId) {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
     }
-    public List<User> findAllUsersByKeyword(Long userKeywordsId) {
+    public List<UserScore> findAllUsersByKeyword(Long userKeywordsId) {
         List<UserKeywords> findUserKeywordsByKeyword = userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
-        List<User> users = new ArrayList<>();
-        for (UserKeywords userKeywords : findUserKeywordsByKeyword) {
-            userDao.findById(userKeywords.getUserId()).ifPresent(users::add);
+        List<UserScore> users = new ArrayList<>();
+        for (UserKeywords userKeyword : findUserKeywordsByKeyword) {
+            userDao.findById(userKeyword.getUserId()).ifPresent(user ->
+                    users.add(UserScore.builder().name(user.getUserName()).userId(userKeyword.getUserId()).score(userKeyword.getScore()).build()));
         }
         return users;
     }
