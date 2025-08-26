@@ -4,14 +4,12 @@ import com.gossamer.voyant.entities.Keywords;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import com.gossamer.voyant.services.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("user")
 public class UserController {
 

@@ -2,15 +2,13 @@ package com.gossamer.voyant.controllers;
 
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.services.UserRecommendationsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("recommendations")
 public class UserRecsController {
     private final UserRecommendationsService userRecommendationsService;
