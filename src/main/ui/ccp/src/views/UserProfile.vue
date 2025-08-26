@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const userId = route.query.userId || 1 // fallback if not passed in URL
 
 const user = ref(null)
@@ -26,6 +27,15 @@ watch(() => route.query.userId, (newId) => {
   }
 })
 
+function goToHobbyForm() {
+  if (user.value?.id) {
+    router.push({
+      name: 'HobbyForm',
+      query: { userId: user.value.id.toString() }
+    })
+  }
+}
+
 onMounted(() => {
   loadUserProfile(Number(userId))
 })
@@ -48,16 +58,16 @@ async function loadUserProfile(id: number) {
     interests.value = await interestRes.json()
     matches.value = (await matchesRes.json()).filter(m => m.userId !== id)
 
-    for (const keyword of interests.value) {
+    for (const interest of interests.value) {
       try {
-        const res = await fetch(`http://localhost:8080/user/getAllUsersScoresByKeywordId?keywordId=${keyword.id}`)
+        const res = await fetch(`http://localhost:8080/user/getAllUsersScoresByKeywordId?keywordId=${interest.keywordId}`)
         if (!res.ok) throw new Error()
 
         const allUsers = await res.json()
         const filteredUsers = allUsers.filter(u => u.userId !== id)
-        interestCounts.value[keyword.id] = filteredUsers.length
+        interestCounts.value[interest.keywordId] = filteredUsers.length
       } catch {
-        interestCounts.value[keyword.id] = 0
+        interestCounts.value[interest.keywordId] = 0
       }
     }
   } catch (err) {
@@ -74,7 +84,7 @@ async function openKeywordModal(keyword) {
   keywordUsers.value = []
 
   try {
-    const res = await fetch(`http://localhost:8080/user/getAllUsersScoresByKeywordId?keywordId=${keyword.id}`)
+    const res = await fetch(`http://localhost:8080/user/getAllUsersScoresByKeywordId?keywordId=${keyword.keywordId}`)
     if (!res.ok) throw new Error("Failed to fetch keyword users")
     keywordUsers.value = (await res.json()).filter(u => user.value && u.userId !== user.value.id)
   } catch (err) {
@@ -94,15 +104,19 @@ async function openKeywordModal(keyword) {
     <div v-if="interests.length">
       <h3>Interests</h3>
       <ul>
-        <li v-for="keyword in interests" :key="keyword.id" class="clickable" @click="openKeywordModal(keyword)">
-          {{ keyword.keyword }} ({{ interestCounts[keyword.id] || 0 }})
+        <li v-for="interest in interests.filter(i => i.score === 7)" :key="interest.keywordId" class="clickable" @click="openKeywordModal(interest)">
+          {{ interest.name }} ({{ interestCounts[interest.keywordId] || 0 }})
         </li>
       </ul>
     </div>
 
+    <div style="display: flex; justify-content: center; margin-top: 1rem;">
+      <button class="add-hobby-btn" @click="goToHobbyForm">Add More Hobbies</button>
+    </div>
+
     <div class="modal-overlay" v-if="showModal" @click.self="showModal = false">
       <div class="modal-content">
-        <h3>Users who like "{{ selectedKeyword?.keyword }}"</h3>
+        <h3>Users who like "{{ selectedKeyword?.name }}"</h3>
         <ul v-if="!loading && keywordUsers.length">
           <li v-for="user in keywordUsers" :key="user.userId">
             <router-link
@@ -187,5 +201,20 @@ li {
   width: 90%;
   max-width: 400px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.add-hobby-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.add-hobby-btn:hover {
+  background-color: #2563eb;
 }
 </style>
