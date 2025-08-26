@@ -7,14 +7,16 @@ const userId = route.query.userId || 1 // fallback if not passed in URL
 
 const user = ref(null)
 const interests = ref([])
+const matches = ref([])
 const loading = ref(true)
 const error = ref('')
 
 onMounted(async () => {
   try {
-    const [userRes, interestRes] = await Promise.all([
+    const [userRes, interestRes, matchesRes] = await Promise.all([
       fetch(`http://localhost:8080/user/findById?userId=${userId}`),
-      fetch(`http://localhost:8080/user/interests?userId=${userId}`)
+      fetch(`http://localhost:8080/user/interests?userId=${userId}`),
+      fetch(`http://localhost:8080/user/getMatches?userId=${userId}`)
     ])
 
     if (!userRes.ok || !interestRes.ok) {
@@ -23,6 +25,7 @@ onMounted(async () => {
 
     user.value = await userRes.json()
     interests.value = await interestRes.json()
+    matches.value = await matchesRes.json()
   } catch (err) {
     console.error(err)
     error.value = "Could not load profile"
@@ -45,6 +48,15 @@ onMounted(async () => {
       <ul>
         <li v-for="keyword in interests" :key="keyword.id">
           {{ keyword.keyword }}
+        </li>
+      </ul>
+    </div>
+
+    <div v-if="matches.length">
+      <h3>Matches</h3>
+      <ul>
+        <li v-for="match in matches" :key="match.userId">
+          {{ match.name }} (Score: {{ match.score }})
         </li>
       </ul>
     </div>
