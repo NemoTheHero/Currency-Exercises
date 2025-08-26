@@ -10,6 +10,7 @@ import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import com.gossamer.voyant.entities.UserUserScore;
 
+import com.gossamer.voyant.model.UserInterest;
 import com.gossamer.voyant.model.UserScore;
 import org.springframework.stereotype.Service;
 
@@ -50,8 +51,8 @@ public class UserService {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
     }
 
-    public List<UserScore> getUserInterestsByUserId(Long userId) {
-        List<UserScore> userScores = new ArrayList<>();
+    public List<UserInterest> getUserInterestsByUserId(Long userId) {
+        List<UserInterest> userScores = new ArrayList<>();
         User user = userDao.findById(userId).orElse(null);
         if (user == null) {
             return new ArrayList<>();
@@ -61,7 +62,12 @@ public class UserService {
         userKeywords.forEach(userKeyword -> {
             Optional<Keyword> keyword = keywordsDao.findById(userKeyword.getKeywordId());
 
-            keyword.ifPresent(value -> userScores.add(UserScore.builder().userId(user.getId()).score(userKeyword.getScore()).name(value.getKeyword()).build()));
+            keyword.ifPresent(value -> userScores.add(UserInterest.builder()
+                    .userId(user.getId())
+                    .keywordId(value.getId())
+                    .name(value.getKeyword())
+                    .score(userKeyword.getScore())
+                    .build()));
         });
 
         return userScores;
