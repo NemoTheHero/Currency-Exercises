@@ -14,13 +14,34 @@ public class UserRecommendationsService {
     }
 
     String promptString =
-            "give me the top 4 hobbies that correlate to %s. from those 4 give me the top 4 hobbies that correlate to each one. Structure the graph in json format. each object other than the last one should be wrapped in a correlated_hobbies.";
+            "In json format, give me the top 4 hobbies that correlate to %s, for each result give me the top 4 hobbies for each result. each result should have an object called correlated_hobbies. only return the json in this format\n" +
+                    "{\n" +
+                    "    \"%s\": {\n" +
+                    "        \"correlated_hobbies\": [\n" +
+                    "            {\n" +
+                    "                \"name\": \"result\",\n" +
+                    "                \"correlated_hobbies\": [\n" +
+                    "                    {\n" +
+                    "                        \"name\": \"result\"\n" +
+                    "                    },\n" +
+                    "                    {\n" +
+                    "                        \"name\": \"result\"\n" +
+                    "                    },\n" +
+                    "                    {\n" +
+                    "                        \"name\": \"result\"\n" +
+                    "                    },\n" +
+                    "                    {\n" +
+                    "                        \"name\": \"result\"\n" +
+                    "                    }\n" +
+                    "                ]\n" +
+                    "            }\n" +
+                    "}\n";
 
     String getStringPrompt(String hobby) {
-        return String.format(promptString, hobby);
+        return String.format(promptString, hobby, hobby.replaceAll(" ", "_"));
     }
 
     public String getUserRecsFromChatGpt(String hobby) throws IOException, InterruptedException {
-        return chatGPTService.sendPromptAndGetJson(getStringPrompt(hobby));
+        return chatGPTService.getChatReply(getStringPrompt(hobby));
     }
 }
