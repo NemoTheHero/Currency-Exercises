@@ -17,6 +17,6 @@ public class UserRecsController {
 
     @GetMapping("/hobby")
     String getUser(@RequestParam String hobby) throws IOException, InterruptedException {
-        return userRecommendationsService.getUserRecsFromChatGpt(hobby) ;
+        return userRecommendationsService.getUserRecsFromChatGpt(hobby);
     }
 }
