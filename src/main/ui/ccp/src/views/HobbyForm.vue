@@ -146,7 +146,7 @@ async function clickDone() {
 </script>
 
 <template>
-  <div id="user-name" class="center-screen">{{userName}}</div>
+  <div id="user-name" class="center-screen">{{userName ? userName : '&nbsp;'}}</div>
   <div class="center-screen">
   <div id="selections-box">
     <span class="selection" v-for="selection in selections">{{selection}}</span>
@@ -217,11 +217,14 @@ background-color: #2563eb;
 
 /* Selections */
 #selections-box {
-display: flex;
-flex-wrap: wrap;
-gap: 0.5rem;
-max-width: 700px;
-margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+  align-content: flex-start;
+  gap: 10px;
+  max-width: 600px;
+  min-height: 100px;
+  margin: 20px auto;
 }
 
 .selection {
@@ -253,6 +256,7 @@ font-size: 0.95rem;
 cursor: pointer;
 transition: all 0.2s ease-in-out;
 user-select: none;
+  margin-bottom: 0.4rem;
 }
 
 .parent-suggestion:hover,
@@ -273,5 +277,25 @@ font-style: italic;
 font-size: 1rem;
 color: #555;
 margin-top: 1rem;
+min-height: 265px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+.loading-box::after {
+content: '';
+display: inline-block;
+width: 1.2em;
+height: 1.2em;
+margin-left: 0.7em;
+border-radius: 50%;
+border: 3px solid #7cadff;
+border-top: 3px solid #dbeafe;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
 }
 </style>
