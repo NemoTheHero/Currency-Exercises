@@ -9,7 +9,7 @@ import com.gossamer.voyant.entities.KeywordDTO;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import com.gossamer.voyant.entities.UserUserScore;
-import java.util.stream.Collectors;
+
 import com.gossamer.voyant.model.UserScore;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +48,23 @@ public class UserService {
 
     public List<UserKeywords> findUserKeywordsByKeyword(Long userKeywordsId) {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
+    }
+
+    public List<UserScore> getUserInterestsByUserId(Long userId) {
+        List<UserScore> userScores = new ArrayList<>();
+        User user = userDao.findById(userId).orElse(null);
+        if (user == null) {
+            return new ArrayList<>();
+        }
+        List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
+
+        userKeywords.forEach(userKeyword -> {
+            Optional<Keyword> keyword = keywordsDao.findById(userKeyword.getKeywordId());
+
+            keyword.ifPresent(value -> userScores.add(UserScore.builder().userId(user.getId()).score(userKeyword.getScore()).name(value.getKeyword()).build()));
+        });
+
+        return userScores;
     }
     public List<UserScore> findAllUsersByKeyword(Long userKeywordsId) {
         List<UserKeywords> findUserKeywordsByKeyword = userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);

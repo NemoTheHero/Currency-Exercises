@@ -1,6 +1,5 @@
 package com.gossamer.voyant.controllers;
 
-import com.gossamer.voyant.entities.Keyword;
 import com.gossamer.voyant.entities.KeywordDTO;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
@@ -29,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/interests")
-    List<Keyword> getUserInterests(@RequestParam Long userId) {
-        return userService.getInterests(userId) ;
+    List<UserScore> getUserInterests(@RequestParam Long userId) {
+        return userService.getUserInterestsByUserId(userId) ;
     }
 
     @GetMapping("/getUsersKeywords")

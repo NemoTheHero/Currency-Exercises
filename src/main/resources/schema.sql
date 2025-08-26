@@ -12,17 +12,6 @@ create table if not exists keywords
     PRIMARY KEY (ID)
 );
 
-create table if not exists associations
-(
-    ID                     int            not null AUTO_INCREMENT,
-    keyword1Id             int            not null,
-    keyword2Id             int            not null,
-    conversion_rate        NUMERIC(20, 5) not null,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (keyword1Id) references keywords (ID),
-    FOREIGN KEY (keyword2Id) references keywords (ID)
-);
-
 create table if not exists users
 (
     ID       int          not null AUTO_INCREMENT,

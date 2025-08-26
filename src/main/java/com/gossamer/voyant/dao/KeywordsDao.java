@@ -13,7 +13,7 @@ import java.util.Optional;
 @Table(name = "keywords")
 public interface KeywordsDao
         extends CrudRepository<Keyword, Long> {
-    Optional<Keyword> findById(Long userId);
+    Optional<Keyword> findById(Long id);
 
     @Query("select k from Keyword k where k.keyword = ?1")
     Optional<Keyword> findByKeyword(String keyword);
