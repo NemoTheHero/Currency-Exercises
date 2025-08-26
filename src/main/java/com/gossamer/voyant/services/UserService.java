@@ -102,12 +102,17 @@ public class UserService {
                         userKeywordsList.add(existingItem);
                     }
                 } else {
-                    UserKeywords userKeywords = UserKeywords.builder()
-                            .userId(userId)
-                            .keywordId(keywordOpt.get().getId())
-                            .score((long)keywordDTO.getScore())
-                            .build();
-                    userKeywordsList.add(userKeywords);
+                    UserKeywords existingElem = userKeywordsList.stream().filter(o -> o.getKeywordId().equals(keywordOpt.get().getId())).findFirst().orElse(null);
+                    if (existingElem != null && existingElem.getScore() < keywordDTO.getScore()) {
+                        existingElem.setScore((long)keywordDTO.getScore());
+                    } else if (existingElem == null) {
+                        UserKeywords userKeywords = UserKeywords.builder()
+                                .userId(userId)
+                                .keywordId(keywordOpt.get().getId())
+                                .score((long)keywordDTO.getScore())
+                                .build();
+                        userKeywordsList.add(userKeywords);
+                    }
                 }
             }
         }

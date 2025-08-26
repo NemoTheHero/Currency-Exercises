@@ -22,7 +22,7 @@ public class KeywordService {
                 .filter(name -> !existingNames.contains(name))
                 .toList();
 
-        List<Keyword> toBeAdded = missingNames.stream().map(name -> Keyword.builder().keyword(name).build()).toList();
+        List<Keyword> toBeAdded = missingNames.stream().distinct().map(name -> Keyword.builder().keyword(name).build()).toList();
         keywordsDao.saveAll(toBeAdded);
     }
 
