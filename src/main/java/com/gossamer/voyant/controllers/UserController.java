@@ -52,6 +52,7 @@ public class UserController {
     void addInterests(@RequestParam Long userId, @RequestBody List<KeywordDTO> keywords) {
         List<String> keywordNames = keywords.stream().map(keywordDTO -> keywordDTO.getKeyword().toLowerCase())
                 .toList();
+        keywords.forEach(keywordDTO -> keywordDTO.setKeyword(keywordDTO.getKeyword().toLowerCase()));
         keywordService.addNewKeywords(keywordNames);
         userService.addInterests(userId, keywords);
     }
