@@ -1,6 +1,5 @@
 package com.gossamer.voyant.config;
 
-import com.gfg.springbootfilterexample.filter.CustomFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
