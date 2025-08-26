@@ -16,4 +16,6 @@ public interface UserUserScoreDao
 
     Optional<UserUserScore> findUserUserScoreByUser1IdOrUser2Id(Long lowerUserId, Long higherUserId);
 
+    List<UserUserScore> findUserUserScoreByUser1IdOrUser2IdOrderByScoreDesc(Long userId1, Long userId2);
+
 }

@@ -3,6 +3,7 @@ package com.gossamer.voyant.controllers;
 import com.gossamer.voyant.entities.Keywords;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
+import com.gossamer.voyant.model.UserScore;
 import com.gossamer.voyant.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +37,10 @@ public class UserController {
     @GetMapping("/getAllUsersByKeywordId")
     List<User> getAllUsersByKeywords(@RequestParam Long keywordId) {
         return userService.findAllUsersByKeyword(keywordId) ;
+    }
+
+    @GetMapping("/getMatches")
+    List<UserScore> getMatches(@RequestParam Long userId) {
+        return userService.getMatchesForUserScoreDesc(userId) ;
     }
 }

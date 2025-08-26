@@ -8,6 +8,7 @@ import com.gossamer.voyant.entities.Keywords;
 import com.gossamer.voyant.entities.User;
 import com.gossamer.voyant.entities.UserKeywords;
 import com.gossamer.voyant.entities.UserUserScore;
+import com.gossamer.voyant.model.UserScore;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -54,6 +55,24 @@ public class UserService {
             userDao.findById(userKeywords.getUserId()).ifPresent(users::add);
         }
         return users;
+    }
+
+    public List<UserScore> getMatchesForUserScoreDesc(Long userId) {
+        List<UserUserScore> userUserScores = userUserScoreDao.findUserUserScoreByUser1IdOrUser2IdOrderByScoreDesc(userId, userId);
+        List<UserScore> userScores = new ArrayList<>();
+
+        for (UserUserScore userUserScore : userUserScores) {
+            Long otherUserId = userUserScore.getUser1Id();
+            if (userId.equals(otherUserId)) {
+                otherUserId = userUserScore.getUser2Id();
+            }
+            User user = userDao.findById(otherUserId).orElse(null);
+            if (user != null) {
+                userScores.add(UserScore.builder().userId(otherUserId).name(user.getUserName()).score(userUserScore.getScore()).build());
+
+            }
+        }
+        return userScores;
     }
 
     private void updateRankingsForUser(User user) {
