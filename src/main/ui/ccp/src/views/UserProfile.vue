@@ -238,12 +238,17 @@ li {
   width: 90%;
   max-width: 400px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+  max-height: 80vh;
+  overflow-y: auto;
 }
+
 
 .add-hobby-btn {
   background-color: #3b82f6;
   color: white;
   border: none;
+
   padding: 10px 20px;
   font-size: 1rem;
   border-radius: 9999px;
