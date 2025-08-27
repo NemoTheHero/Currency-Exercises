@@ -18,6 +18,10 @@ const keywordUsers = ref([])
 
 const interestCounts = ref<Record<number, number>>({})
 
+const showSharedModal = ref(false)
+const sharedWithUser = ref(null)
+const sharedInterests = ref<UserInterest[]>([])
+
 watch(() => route.query.userId, (newId) => {
   if (newId) {
     showModal.value = false
@@ -91,6 +95,21 @@ async function openKeywordModal(keyword) {
     console.error("Error loading keyword users", err)
   }
 }
+
+async function openSharedInterestsModal(matchUser) {
+  sharedWithUser.value = matchUser
+  showSharedModal.value = true
+  sharedInterests.value = []
+
+  try {
+    const res = await fetch(`http://localhost:8080/user/getSharedInterest?userId=${user.value.id}&otherUserId=${matchUser.userId}`)
+    if (!res.ok) throw new Error("Failed to fetch shared interests")
+
+    sharedInterests.value = await res.json()
+  } catch (err) {
+    console.error("Error loading shared interests", err)
+  }
+}
 </script>
 
 <template>
@@ -136,10 +155,28 @@ async function openKeywordModal(keyword) {
     <div v-if="matches.length">
       <h3>Matches</h3>
       <ul>
-        <li v-for="match in matches" :key="match.userId">
+        <li
+            v-for="match in matches"
+            :key="match.userId"
+            class="clickable"
+            @click="openSharedInterestsModal(match)"
+        >
           {{ match.name }} (Score: {{ match.score }})
         </li>
       </ul>
+    </div>
+
+    <div class="modal-overlay" v-if="showSharedModal" @click.self="showSharedModal = false">
+      <div class="modal-content">
+        <h3>Shared Interests with {{ sharedWithUser?.name }}</h3>
+        <ul v-if="sharedInterests.length">
+          <li v-for="interest in sharedInterests" :key="interest.keywordId">
+            {{ interest.name }} (Score: {{ interest.score }})
+          </li>
+        </ul>
+        <p v-else>No shared interests found.</p>
+        <button @click="showSharedModal = false">Close</button>
+      </div>
     </div>
 
     <div v-if="loading">Loading...</div>
