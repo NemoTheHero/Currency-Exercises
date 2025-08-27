@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.math.NumberUtils.min;
+
 
 @Service
 public class UserService {
@@ -84,6 +86,28 @@ public class UserService {
                     users.add(UserScore.builder().name(user.getUserName()).userId(userKeyword.getUserId()).score(userKeyword.getScore()).build()));
         }
         return users;
+    }
+
+    public List<UserInterest> getUserMatchesForUsers(Long userId, Long otherUserId) {
+        List<UserInterest> userInterests = new ArrayList<>();
+        List<UserKeywords> userKeywords = userKeywordsDao.findUserKeywordsByUserId(userId);
+        List<UserKeywords> otherUserKeywords = userKeywordsDao.findUserKeywordsByUserId(otherUserId);
+
+        for (UserKeywords userKeyword : userKeywords) {
+            for (UserKeywords otherUserKeyword : otherUserKeywords) {
+                if (userKeyword.getKeywordId().equals(otherUserKeyword.getKeywordId())) {
+                    if (keywordsDao.findById(otherUserKeyword.getKeywordId()).isPresent()) {
+                        userInterests.add(UserInterest.builder()
+                                .userId(otherUserId)
+                                .keywordId(otherUserKeyword.getKeywordId())
+                                .name(keywordsDao.findById(otherUserKeyword.getKeywordId()).get().getKeyword())
+                                .score(min(userKeyword.getScore(), otherUserKeyword.getScore()))
+                                .build());
+                    }
+                }
+            }
+        }
+        return userInterests;
     }
 
     public List<UserScore> getMatchesForUserScoreDesc(Long userId) {

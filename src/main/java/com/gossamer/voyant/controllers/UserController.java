@@ -52,6 +52,11 @@ public class UserController {
         return userService.getMatchesForUserScoreDesc(userId) ;
     }
 
+    @GetMapping("/getSharedInterest")
+    List<UserInterest> getSharedInterests(@RequestParam Long userId, @RequestParam Long otherUserId) {
+        return userService.getUserMatchesForUsers(userId, otherUserId) ;
+    }
+
     @PostMapping("/addInterests")
     void addInterests(@RequestParam Long userId, @RequestBody List<KeywordDTO> keywords) {
         List<String> keywordNames = keywords.stream().map(keywordDTO -> keywordDTO.getKeyword().toLowerCase())
