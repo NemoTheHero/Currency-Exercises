@@ -1,9 +1,8 @@
-drop table if exists user_keywords;
-drop table if exists user_user_score;
-drop table if exists associations;
-drop table if exists keywords;
-
-drop table if exists users;
+-- drop table if exists user_keywords;
+-- drop table if exists user_user_score;
+-- drop table if exists associations;
+-- drop table if exists keywords;
+-- drop table if exists users;
 
 create table if not exists keywords
 (
@@ -40,9 +39,3 @@ create table if not exists user_user_score
     FOREIGN KEY (user1_Id) references users (ID),
     FOREIGN KEY (user2_Id) references users (ID)
 );
-
-insert into users (ID, username) values (1, 'Nemo');
-insert into users (ID, username) values (2, 'Bailey');
-insert into users (ID, username) values (3, 'Michael');
-insert into users (ID, username) values (4, 'Karim');
-insert into users (ID, username) values (5, 'Sam');

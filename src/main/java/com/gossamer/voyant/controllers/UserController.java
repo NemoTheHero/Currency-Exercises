@@ -23,6 +23,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/createUser")
+    String createUser(@RequestParam String name) {
+        userService.createUser(name);
+        return "Created " + name ;
+    }
     @GetMapping("/getAllUsers")
     List<User> getAllUsers() {
         return userService.findAllUsers() ;

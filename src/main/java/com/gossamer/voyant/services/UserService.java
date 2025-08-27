@@ -53,6 +53,10 @@ public class UserService {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
     }
 
+    public void createUser(String userName) {
+        User user = User.builder().userName(userName).build();
+        userDao.save(user);
+    }
     public List<User> findAllUsers() {
         return userDao.findAll();
     }
