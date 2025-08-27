@@ -111,7 +111,8 @@ public class UserService {
                 }
             }
         }
-        return userInterests;
+        return userInterests.stream()
+                .sorted(Comparator.comparing(UserInterest::getScore)).toList();
     }
 
     public List<UserScore> getMatchesForUserScoreDesc(Long userId) {
