@@ -39,20 +39,20 @@ getUsers();
 <template>
 <div>
   <div id="users">Users</div>
-  <div id="existing-users">
-    <div v-for="user in users" :key="user.id">
-      <div>{{ user.userName }}</div>
-      <RouterLink :to="`/profile?userId=${user.id}`">View Profile</RouterLink>
-      <RouterLink :to="`/hobby-form?userId=${user.id}`">Add Hobbies</RouterLink>
+    <div v-if="users.length" id="existing-users">
+      <div v-for="user in users" :key="user.id" class="existing-user">
+        <div>{{ user.userName }}</div>
+        <RouterLink :to="`/profile?userId=${user.id}`">View Profile</RouterLink>
+        <RouterLink :to="`/hobby-form?userId=${user.id}`">Add Interests</RouterLink>
+      </div>
     </div>
-  </div>
   <div id="new-user-form">
-    <div>Add new user:</div>
-    <div>
+    <div>Add new user</div>
+    <div id="new-user-input">
       <label>Name:</label>
       <input type="text" name="name" v-model="userName" @keydown.enter="clickAdd" />
+      <button @click="clickAdd">Add User</button>
     </div>
-    <button @click="clickAdd">Add User</button>
   </div>
 </div>
 </template>
@@ -96,15 +96,29 @@ input {
 }
 
 #existing-users {
-  margin: 1rem;
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fafafa;
+  width: 330px;
+  margin: 1rem auto;
+  text-align: center;
 }
 
-#existing-users-text {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+#new-user-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+#new-user-form {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.existing-user:not(:last-child) {
+  margin-bottom: 1rem;
 }
 </style>
