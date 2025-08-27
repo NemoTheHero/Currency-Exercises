@@ -153,7 +153,7 @@ async function clickDone() {
   </div>
   </div>
 <div id="hobby-input-wrapper" class="center-screen">
-  <input v-model="hobbyInput" id="hobby-input" name="hobby" type="text" @keydown.enter="clickAdd" />
+  <input v-model="hobbyInput" id="hobby-input" name="hobby" type="text" @keydown.enter="clickAdd" placeholder="Enter a hobby or interest" />
   <button @click="clickAdd" :disabled="loadingSuggestions">Add</button>
 </div>
   <div v-if="!loadingSuggestions" id="suggestion-box">
@@ -302,5 +302,11 @@ animation: spin 0.8s linear infinite;
 button:disabled {
 background-color: #bbcff4;
   cursor: default;
+}
+
+label[for="hobby-input"] {
+  display: block;
+  margin-left: 10px;
+  margin-bottom: 5px;
 }
 </style>
