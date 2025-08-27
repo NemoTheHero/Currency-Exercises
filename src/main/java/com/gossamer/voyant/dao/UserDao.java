@@ -12,6 +12,8 @@ import java.util.Optional;
 @Table(name = "user")
 public interface UserDao
         extends CrudRepository<User, Long> {
+
+
     Optional<User> findById(Long userId);
 
     List<User> findAll();
