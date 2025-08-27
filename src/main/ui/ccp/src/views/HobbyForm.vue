@@ -168,7 +168,7 @@ async function clickDone() {
     Loading suggestions...
   </div>
   <div v-if="selections.length" class="center-screen">
-    <button @click="clickDone" :disabled="loadingSuggestions">Done</button>
+    <button @click="clickDone" :disabled="loadingSuggestions">Done Adding</button>
   </div>
 </template>
 
