@@ -173,13 +173,6 @@ async function clickDone() {
 </template>
 
 <style scoped>
-/* Layout & Text */
-.center-screen {
-display: flex;
-justify-content: center;
-align-items: center;
-margin: 1rem 0;
-}
 
 #user-name {
 font-size: 1.75rem;

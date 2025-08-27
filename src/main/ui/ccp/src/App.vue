@@ -17,4 +17,11 @@ html {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   background: #f5fdff;
 }
+
+.center-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+}
 </style>
