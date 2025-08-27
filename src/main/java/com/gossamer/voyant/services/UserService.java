@@ -112,7 +112,7 @@ public class UserService {
             }
         }
         return userInterests.stream()
-                .sorted(Comparator.comparing(UserInterest::getScore)).toList();
+                .sorted(Comparator.comparing(UserInterest::getScore).reversed()).toList();
     }
 
     public List<UserScore> getMatchesForUserScoreDesc(Long userId) {
