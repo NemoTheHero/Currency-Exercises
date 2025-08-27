@@ -23,6 +23,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/getAllUsers")
+    List<User> getAllUsers() {
+        return userService.findAllUsers() ;
+    }
     @GetMapping("/findById")
     Optional<User> getUser(@RequestParam Long userId) {
         return userService.getUser(userId) ;

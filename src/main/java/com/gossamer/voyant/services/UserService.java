@@ -51,6 +51,10 @@ public class UserService {
         return userKeywordsDao.findUserKeywordsByKeywordId(userKeywordsId);
     }
 
+    public List<User> findAllUsers() {
+        return userDao.findAll();
+    }
+
     public List<UserInterest> getUserInterestsByUserId(Long userId) {
         List<UserInterest> userScores = new ArrayList<>();
         User user = userDao.findById(userId).orElse(null);
