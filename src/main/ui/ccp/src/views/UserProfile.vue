@@ -120,6 +120,20 @@ async function openSharedInterestsModal(matchUser) {
       <p><strong>Name:</strong> {{ user.userName }}</p>
     </div>
 
+    <div v-if="matches.length">
+      <h3>Matches</h3>
+      <ul>
+        <li
+            v-for="match in matches"
+            :key="match.userId"
+            class="clickable"
+            @click="openSharedInterestsModal(match)"
+        >
+          {{ match.name }} (Score: {{ match.score }})
+        </li>
+      </ul>
+    </div>
+
     <div v-if="interests.length">
       <h3>Interests</h3>
       <ul>
@@ -150,20 +164,6 @@ async function openSharedInterestsModal(matchUser) {
         <p v-else>No users found.</p>
         <button @click="showModal = false">Close</button>
       </div>
-    </div>
-
-    <div v-if="matches.length">
-      <h3>Matches</h3>
-      <ul>
-        <li
-            v-for="match in matches"
-            :key="match.userId"
-            class="clickable"
-            @click="openSharedInterestsModal(match)"
-        >
-          {{ match.name }} (Score: {{ match.score }})
-        </li>
-      </ul>
     </div>
 
     <div class="modal-overlay" v-if="showSharedModal" @click.self="showSharedModal = false">
