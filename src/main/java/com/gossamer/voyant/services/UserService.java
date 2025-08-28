@@ -89,7 +89,8 @@ public class UserService {
             userDao.findById(userKeyword.getUserId()).ifPresent(user ->
                     users.add(UserScore.builder().name(user.getUserName()).userId(userKeyword.getUserId()).score(userKeyword.getScore()).build()));
         }
-        return users;
+        return users.stream()
+                .sorted(Comparator.comparing(UserScore::getScore).reversed()).toList();
     }
 
     public List<UserInterest> getUserMatchesForUsers(Long userId, Long otherUserId) {
