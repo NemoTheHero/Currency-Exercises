@@ -151,7 +151,7 @@ async function openSharedInterestsModal(matchUser) {
       <div class="modal-content">
         <h3>Users who like "{{ selectedKeyword?.name }}"</h3>
         <ul v-if="!loading && keywordUsers.length">
-          <li v-for="user in keywordUsers" :key="user.userId">
+          <li v-for="user in keywordUsers" :key="user.userId" :class="{ 'green-background': user.score === 7, 'yellow-background': user.score === 3,'red-backgroun': user.score === 1 }">
             <router-link
                 :to="`/profile?userId=${user.userId}`"
                 class="user-link"
@@ -170,7 +170,7 @@ async function openSharedInterestsModal(matchUser) {
       <div class="modal-content">
         <h3>Shared Interests with {{ sharedWithUser?.name }}</h3>
         <ul v-if="sharedInterests.length">
-          <li v-for="interest in sharedInterests" :key="interest.keywordId">
+          <li v-for="interest in sharedInterests" :key="interest.keywordId" :class="{ 'green-background': interest.score === 7, 'yellow-background': interest.score === 3,'red-backgroun': interest.score === 1 }">>
             {{ interest.name }} (Score: {{ interest.score }})
           </li>
         </ul>
@@ -212,6 +212,15 @@ li {
   margin-top: 10px;
 }
 
+.red-backgroun {
+  background: lightsalmon;
+}
+.yellow-background {
+  background: peachpuff;
+}
+.green-background {
+  background: lightgreen;
+}
 .clickable {
   cursor: pointer;
   color: #3b82f6;
