@@ -39,14 +39,7 @@ getUsers();
 <template>
 <div>
   <div id="users">Users</div>
-    <div v-if="users.length" id="existing-users">
-      <div v-for="user in users" :key="user.id" class="existing-user">
-        <div>{{ user.userName }}</div>
-        <RouterLink :to="`/profile?userId=${user.id}`">View Profile</RouterLink>
-        <RouterLink :to="`/hobby-form?userId=${user.id}`">Add Interests</RouterLink>
-      </div>
-    </div>
-  <div id="new-user-form">
+  <div id="new-user-form" style="margin-bottom: 2rem">
     <div>Add new user</div>
     <div id="new-user-input">
       <label>Name:</label>
@@ -54,6 +47,14 @@ getUsers();
       <button @click="clickAdd">Add User</button>
     </div>
   </div>
+    <div v-if="users.length" id="existing-users"style="margin-bottom: 4rem" >
+      <div v-for="user in users" :key="user.id" class="existing-user">
+        <div>{{ user.userName }}</div>
+        <RouterLink :to="`/profile?userId=${user.id}`">View Profile</RouterLink>
+        <RouterLink :to="`/hobby-form?userId=${user.id}`">Add Interests</RouterLink>
+      </div>
+    </div>
+
 </div>
 </template>
 
