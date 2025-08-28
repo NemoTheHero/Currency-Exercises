@@ -119,6 +119,9 @@ async function openSharedInterestsModal(matchUser) {
     <div v-if="user">
       <p><strong>Name:</strong> {{ user.userName }}</p>
     </div>
+    <div style="display: flex; justify-content: center; margin-top: 1rem;">
+      <button class="add-hobby-btn" @click="goToHobbyForm">Add More Hobbies</button>
+    </div>
 
     <div v-if="matches.length">
       <h3>Matches</h3>
@@ -143,9 +146,7 @@ async function openSharedInterestsModal(matchUser) {
       </ul>
     </div>
 
-    <div style="display: flex; justify-content: center; margin-top: 1rem;">
-      <button class="add-hobby-btn" @click="goToHobbyForm">Add More Hobbies</button>
-    </div>
+
 
     <div class="modal-overlay" v-if="showModal" @click.self="showModal = false">
       <div class="modal-content">
